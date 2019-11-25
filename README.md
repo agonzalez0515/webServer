@@ -1,1 +1,1 @@
-# Web Server - File Server
+# Web Server - File Server [![Build Status](https://travis-ci.org/agonzalez0515/webServer.svg?branch=master)](https://travis-ci.org/agonzalez0515/webServer)
