@@ -7,7 +7,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -39,9 +38,9 @@ public class SocketIOTest {
     }
 
     @Test
-    public void testReadClientStreamLine() {
+    public void testReadClientStreamLine() throws IOException{
         String inputString = "Hello";
-        Scanner input = new Scanner(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes())));
+        BufferedReader input = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes())));
 
         assertEquals("Hello", SocketIO.readFromInputStream(input));
     }
