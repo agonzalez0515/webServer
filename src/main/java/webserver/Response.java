@@ -79,6 +79,12 @@ public class Response {
     public void send() throws IOException {
         String dataToSend = getHTML(path);
         String initialResponseLine = setInitialResponseLine(statusCode);
-        out.print(initialResponseLine + "\r\n" + "Content-Length: " + dataToSend.length() + "\r\n"+ "Content-Type: text/html" + "\r\n"+"\r\n"+dataToSend);
+        out.print(initialResponseLine);
+        out.print("\r\n");
+        out.print("Content-Length: " + dataToSend.length());
+        out.print("\r\n");
+        out.print("Content-Type: text/html");
+        out.print("\r\n\r\n");
+        out.println(dataToSend);
     }
 }
