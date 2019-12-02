@@ -24,9 +24,8 @@ public class App {
 
 
     public static void run() throws  IOException {
-//        int portNumber = Integer.parseInt(System.getenv("PORT"));
-
-            ServerSocket server = createServerSocket(5000);
+        int portNumber = Integer.parseInt(System.getenv("PORT"));
+        ServerSocket server = createServerSocket(portNumber);
 
         Socket client = createClientConnection(server);
         BufferedReader in = SocketIO.createSocketReader(client);
