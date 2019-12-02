@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,24 +18,24 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppTest {
-    App app;
+    App appTest;
 
     @Mock
     ServerSocket mockServer;
 
     @Before
     public void init() {
-        app = new App();
+        appTest = new App();
     }
 
     @Test public void testAppHasAGreeting() {
-        assertNotNull("app should have a greeting", app.getGreeting());
+        assertNotNull("app should have a greeting", appTest.getGreeting());
     }
 
     @Test
     public void testServerSocketWithSpecificPortGetsCreated() throws IOException {
         final int testPort = 5000;
-        ServerSocket testServerSocket = app.createServerSocket(testPort);
+        ServerSocket testServerSocket = appTest.createServerSocket(testPort);
 
         assertEquals(testServerSocket.getLocalPort(), testPort);
         testServerSocket.close();
@@ -44,9 +45,8 @@ public class AppTest {
     public void testAcceptsConnection() throws IOException {
         when(mockServer.accept()).thenReturn(new Socket());
 
-        assertNotNull(app.createClientConnection(mockServer));
+        assertNotNull(appTest.createClientConnection(mockServer));
     }
-
 
 }
 
