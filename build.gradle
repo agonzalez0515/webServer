@@ -28,3 +28,10 @@ application {
     // Define the main class for the application.
     mainClassName = 'webserver.App'
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'webserver.App'
+
+    }
+}

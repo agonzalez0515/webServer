@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODOS</title>
+</head>
+<body>
+    <main class="container">
+        <h1 class="title">My ToDos</h1>
+        <section class="todo-list">
+            <ul>
+                <li> Go to target </li>
+                <li> Wash makeup brushes </li>
+                <li> Read The Artist Way </li>
+                <li> Read Head First Java </li>
+                <li> Bank </li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Courier New;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title {
+        align-self: center;
+        color: rebeccapurple;
+        font-size: 2.5rem;
+    }
+
+    .todo-list {
+        margin: 2rem 30rem;
+    }
+
+    li {
+        padding: 1rem;
+        font-size: 1.5rem;
+        background: lavender;
+        border: 2px solid black;
+        border-bottom: none;
+    }
+
+    li:last-child {
+        border-bottom: 2px solid black;
+    }
+
+</style>
