@@ -1,1 +1,1 @@
-web: gradle run
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/webServer.jar
