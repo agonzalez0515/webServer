@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.*;
 
 public class ResponseTest {
@@ -29,15 +30,15 @@ public class ResponseTest {
 
     @Test
     public void testItReturnsHTMLFromAPath() throws IOException {
-        String path = "/hello.html";
-        assertEquals("<html><body><h1>Hello World</h1></body></html>", response.getHTML(path));
+        String path = "/index.html";
+        assertThat(response.getHTML(path), containsString("<html>") );
     }
 
     @Test
     public void testItReturnsFalseIfPathIsInvalid() throws IOException {
         Response res = new Response(out, "Get", "/world.html");
         String path = "/world.html";
-        assertEquals("File Not Found", res.getHTML(path));
+        assertEquals("File not found.", res.getHTML(path));
     }
 
     @Test
