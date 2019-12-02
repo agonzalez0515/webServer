@@ -1,11 +1,11 @@
 package webserver;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
+
 import java.net.Socket;
+
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -14,7 +14,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.Mockito.*;
+
 
 public class ResponseTest {
     Response response;
@@ -53,7 +53,10 @@ public class ResponseTest {
 
     @Test
     public void testItCreatesHeaderLines() {
-        Map<String, String> expectedHeaders = Map.of("Connection", "Keep-Alive","Content-Type", "text/html");
+        Map<String, String> expectedHeaders = new HashMap<String, String>() {{
+                put("Connection", "Keep-Alive");
+                put("Content-Type", "text/html");
+            }};
 
         response.createHeader("Connection", "Keep-Alive");
         response.createHeader("Content-Type", "text/html");
