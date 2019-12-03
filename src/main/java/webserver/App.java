@@ -43,11 +43,7 @@ public class App {
                 Response response = new Response(out, method, path);
                 response.send();
 
-            } else {
-                String responseLine = "HTTP/1.1 " + 500 + " " + "Unable to parse request" + "\r\n\r\n";
-                out.println(responseLine);
-                return;
-            }
+            } 
         }
     }
 
