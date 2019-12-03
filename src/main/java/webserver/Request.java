@@ -27,14 +27,13 @@ public class Request {
     public boolean parse() throws IOException {
         String initialLine = in.readLine();
         System.out.println("initial line " + initialLine);
-//        if (initialLine == null || initialLine.length() == 0) { //there is no initial line means invalid request format
+        if (initialLine != null || initialLine.length() > 0) {
 //            System.out.println("invalid initial line");
 //            return false;
-//        }
-
-        getRequestMethod(initialLine.split(" ",3));
-        getRequestPath(initialLine.split(" ",3));
-
+            getRequestMethod(initialLine.split(" ",3));
+            getRequestPath(initialLine.split(" ",3));
+        }
+        
         String header = in.readLine();
         while (header != null && header.length() > 0 ) {
             int separatorIndex = header.indexOf(":");
