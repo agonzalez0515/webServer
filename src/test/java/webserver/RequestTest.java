@@ -20,21 +20,21 @@ public class RequestTest {
     Request request;
     BufferedReader in;
 
-    @Test
-    public void testReturnsTrueIfAInitialLineIsParsable() throws IOException {
-        in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream("GET / HTTP/1.1\nHost: 1.1.1\r\n".getBytes())));
-        request = new Request(in);
+//    @Test
+//    public void testReturnsTrueIfAInitialLineIsParsable() throws IOException {
+//        in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream("GET / HTTP/1.1\nHost: 1.1.1\r\n".getBytes())));
+//        request = new Request(in);
+//
+//        assertEquals(true, request.parse() );
+//    }
 
-        assertEquals(true, request.parse() );
-    }
-
-    @Test
-    public void testReturnsFalseIfAInitialLineIsNotParsable() throws IOException{
-        in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream("\r\n".getBytes())));
-        request = new Request(in);
-
-        assertEquals(false, request.parse());
-    }
+//    @Test
+//    public void testReturnsFalseIfAInitialLineIsNotParsable() throws IOException{
+//        in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream("\r\n".getBytes())));
+//        request = new Request(in);
+//
+//        assertEquals(false, request.parse());
+//    }
 
     @Test
     public void testReturnsTrueIfHeadersAreParsable() throws IOException {
