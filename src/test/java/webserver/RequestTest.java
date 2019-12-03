@@ -15,10 +15,10 @@ import java.io.InputStreamReader;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class RequestTest {
-    Request request;
-    BufferedReader in;
+//@RunWith(MockitoJUnitRunner.class)
+//public class RequestTest {
+//    Request request;
+//    BufferedReader in;
 
 //    @Test
 //    public void testReturnsTrueIfAInitialLineIsParsable() throws IOException {
