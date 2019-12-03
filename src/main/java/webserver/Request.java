@@ -26,7 +26,9 @@ public class Request {
 
     public boolean parse() throws IOException {
         String initialLine = in.readLine();
+        System.out.println("initial line " + initialLine);
         if (initialLine == null || initialLine.length() == 0) { //there is no initial line means invalid request format
+            System.out.println("invalid initial line");
             return false;
         }
 

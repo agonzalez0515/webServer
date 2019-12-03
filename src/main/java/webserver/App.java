@@ -36,6 +36,7 @@ public class App {
         while (client != null) {
             Request request = new Request(in);
             if (request.parse())  {
+                System.out.println("in here");
                 String method = request.method;
                 String path = request.path;
                 System.out.println("in app " + path);
