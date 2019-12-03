@@ -57,17 +57,8 @@ class SocketHandler implements Runnable {
     }
 
     public void run() {
-        String input = "";
-        System.out.println("running");
-        try {
-            input = in.readLine();
-            System.out.println("input after running " + input);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
 
-        while (input != null) {
-            System.out.println("input inside while " + input);
+//        while (input != null) {
             Request request = new Request(in);
             try {
                 if (request.parse())  {
@@ -84,6 +75,6 @@ class SocketHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+//        }
     }
 }
