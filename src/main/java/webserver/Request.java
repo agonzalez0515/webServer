@@ -29,23 +29,23 @@ public class Request {
         String nextLine = in.readLine();
         String nextNextLine = in.readLine();
         System.out.println(initialLine+ "**" + nextLine + "**" + nextNextLine);
-//        System.out.println("initial line " + initialLine);
-//        if (initialLine != null && initialLine.length() > 0) {
-////            System.out.println("invalid initial line");
-////            return false;
-//            getRequestMethod(initialLine.split(" ",3));
-//            getRequestPath(initialLine.split(" ",3));
-//        }
-//
-//        String header = in.readLine();
-//        while (header != null && header.length() > 0 ) {
-//            int separatorIndex = header.indexOf(":");
-//            if (separatorIndex == -1) { //there is no separator means invalid request format
-//                return false;
-//            }
-//
-//            header = in.readLine();
-//        }
+        System.out.println("initial line " + initialLine);
+        if (initialLine != null && initialLine.length() > 0) {
+//            System.out.println("invalid initial line");
+//            return false;
+            getRequestMethod(initialLine.split(" ",3));
+            getRequestPath(initialLine.split(" ",3));
+        }
+
+        String header = in.readLine();
+        while (header != null && header.length() > 0 ) {
+            int separatorIndex = header.indexOf(":");
+            if (separatorIndex == -1) { //there is no separator means invalid request format
+                return false;
+            }
+
+            header = in.readLine();
+        }
         return true;
     }
 }

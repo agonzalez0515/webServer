@@ -33,7 +33,7 @@ public class App {
         BufferedReader in = SocketIO.createSocketReader(client);
         PrintWriter out = SocketIO.createSocketWriter(client);
 
-        while (client != null) {
+        while (in != null) {
             Request request = new Request(in);
             if (request.parse())  {
                 System.out.println("in here");
