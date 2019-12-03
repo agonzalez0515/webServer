@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.LinkPermission;
 
 public class App {
 
@@ -55,14 +56,15 @@ class SocketHandler implements Runnable {
     }
 
     public void run() {
+        String input = "";
         System.out.println("running");
         try {
-            System.out.println(in.readLine());
+            input = in.readLine();
         } catch(IOException e) {
             e.printStackTrace();
         }
 
-        while (in != null) {
+        while (input != null) {
             Request request = new Request(in);
             try {
                 if (request.parse())  {
