@@ -56,6 +56,11 @@ class SocketHandler implements Runnable {
 
     public void run() {
         System.out.println("running");
+        try {
+            System.out.println(in.readLine());
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
 
         while (in != null) {
             Request request = new Request(in);
