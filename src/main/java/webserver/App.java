@@ -22,40 +22,58 @@ public class App {
     }
 
 
-
-    public static void run() throws  IOException {
-        System.out.println("running");
-        int portNumber = Integer.parseInt(System.getenv("PORT"));
-        ServerSocket server = createServerSocket(portNumber);
-
-        Socket client = createClientConnection(server);
-        BufferedReader in = SocketIO.createSocketReader(client);
-        PrintWriter out = SocketIO.createSocketWriter(client);
-        System.out.println("in before creating request " + in.readLine());
-
-        while (in != null) {
-            Request request = new Request(in);
-            if (request.parse())  {
-                String method = request.method;
-                String path = request.path;
-                Response response = new Response(out, method, path);
-                response.send();
-
-            } else {
-                String responseLine = "HTTP/1.1 " + 500 + " " + "Unable to parse request" + "\r\n\r\n";
-                out.println(responseLine);
-                return;
-            }
-        }
-    }
-
-
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         try {
-            run();
+
+            int portNumber = Integer.parseInt(System.getenv("PORT"));
+            ServerSocket server = createServerSocket(portNumber);
+
+            Socket client = createClientConnection(server);
+
+            Thread serverThread = new Thread(new SocketHandler(client));
+            serverThread.start();
+
         } catch(IOException e) {
             e.printStackTrace();
+        }
+    }
+}
+
+
+class SocketHandler implements Runnable {
+    private BufferedReader in;
+    private PrintWriter out;
+
+    public SocketHandler(Socket client) {
+        try {
+            this.in = SocketIO.createSocketReader(client);
+            this.out = SocketIO.createSocketWriter(client);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
+        System.out.println("running");
+
+        while (in != null) {
+            Request request = new Request(in);
+            try {
+                if (request.parse())  {
+                    String method = request.method;
+                    String path = request.path;
+                    Response response = new Response(out, method, path);
+                    response.send();
+
+                } else {
+                    String responseLine = "HTTP/1.1 " + 500 + " " + "Unable to parse request" + "\r\n\r\n";
+                    out.println(responseLine);
+                    return;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
