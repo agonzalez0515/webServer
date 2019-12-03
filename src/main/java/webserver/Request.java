@@ -26,16 +26,14 @@ public class Request {
 
     public boolean parse() throws IOException {
         String initialLine = in.readLine();
-        String nextLine = in.readLine();
-        String nextNextLine = in.readLine();
-        System.out.println(initialLine+ "**" + nextLine + "**" + nextNextLine);
-        System.out.println("initial line " + initialLine);
-        if (initialLine != null && initialLine.length() > 0) {
-//            System.out.println("invalid initial line");
-//            return false;
-            getRequestMethod(initialLine.split(" ",3));
-            getRequestPath(initialLine.split(" ",3));
+
+        if (initialLine == null || initialLine.length() == 0) {
+            System.out.println("invalid initial line");
+            return false;
         }
+
+        getRequestMethod(initialLine.split(" ",3));
+        getRequestPath(initialLine.split(" ",3));
 
         String header = in.readLine();
         while (header != null && header.length() > 0 ) {
@@ -45,6 +43,7 @@ public class Request {
             }
 
             header = in.readLine();
+            System.out.println("header " + header);
         }
         return true;
     }

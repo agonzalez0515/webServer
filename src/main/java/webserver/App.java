@@ -26,20 +26,18 @@ public class App {
     public static void run() throws  IOException {
         System.out.println("running");
         int portNumber = Integer.parseInt(System.getenv("PORT"));
-        System.out.println(portNumber);
         ServerSocket server = createServerSocket(portNumber);
 
         Socket client = createClientConnection(server);
         BufferedReader in = SocketIO.createSocketReader(client);
         PrintWriter out = SocketIO.createSocketWriter(client);
+        System.out.println("in before creating request " + in.readLine());
 
         while (in != null) {
             Request request = new Request(in);
             if (request.parse())  {
-                System.out.println("in here");
                 String method = request.method;
                 String path = request.path;
-                System.out.println("in app " + path);
                 Response response = new Response(out, method, path);
                 response.send();
 
