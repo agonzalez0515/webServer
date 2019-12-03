@@ -30,10 +30,11 @@ public class App {
             int portNumber = Integer.parseInt(System.getenv("PORT"));
             ServerSocket server = createServerSocket(portNumber);
 
-            Socket client = createClientConnection(server);
-
-            Thread serverThread = new Thread(new SocketHandler(client));
-            serverThread.start();
+            while (true) {
+                Socket client = createClientConnection(server);
+                Thread serverThread = new Thread(new SocketHandler(client));
+                serverThread.start();
+            }
 
         } catch(IOException e) {
             e.printStackTrace();
