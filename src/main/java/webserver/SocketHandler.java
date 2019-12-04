@@ -20,6 +20,7 @@ class SocketHandler implements Runnable {
         try {
             request.parse();
             Response response = new Response(out, request.path);
+            response.setupDataToBeSent();
             response.send();
 
         } catch (IOException e) {
