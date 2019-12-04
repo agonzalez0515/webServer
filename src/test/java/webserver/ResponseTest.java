@@ -1,69 +1,64 @@
 package webserver;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.net.Socket;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.containsString;
 
 
 public class ResponseTest {
-    Response response;
-    PrintWriter out;
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    PrintWriter out = new PrintWriter(outContent, true);
 
-    @Mock
-    Socket client;
 
-    @Before
-    public void init() {
-        response = new Response(out, "GET", "/");
+    @Test
+    public void  testSetsInitialResponseLineForOkMessage() throws IOException {
+        Response response = new Response(out, "/src/test/resources/test.html");
+        response.setupDataToBeSent();
+        response.send();
+
+        assertThat(outContent.toString(), containsString("HTTP/1.1 200 OK") );
     }
 
     @Test
-    public void testItReturnsHTMLFromAPath() throws IOException {
-        String path = "/index.html";
-        assertThat(response.getHTML(path), containsString("<html>") );
+    public void  testSetsInitialResponseLineForNotFoundMessage() throws IOException {
+        Response response = new Response(out, "/hey.html");
+        response.setupDataToBeSent();
+        response.send();
+
+        assertThat(outContent.toString(), containsString("HTTP/1.1 404 Not Found"));
     }
 
     @Test
-    public void testItReturnsFalseIfPathIsInvalid() throws IOException {
-        Response res = new Response(out, "Get", "/world.html");
-        String path = "/world.html";
-        assertEquals("File not found.", res.getHTML(path));
+    public void testItSendsHTML() throws IOException {
+        Response response = new Response(out, "/src/test/resources/test.html");
+        response.setupDataToBeSent();
+        response.send();
+
+        assertThat(outContent.toString(), containsString("Test File"));
     }
 
     @Test
-    public void testSetsInitialResponseLineForOkMessage() {
-        assertEquals("HTTP/1.1 200 OK", response.setInitialResponseLine(200));
+    public void testItFindsAPathIfItDoesNotHaveExtension() throws IOException {
+        Response response = new Response(out, "/src/test/resources/test");
+        response.setupDataToBeSent();
+        response.send();
+
+        assertThat(outContent.toString(), containsString("Test File"));
     }
 
     @Test
-    public void testSetsInitialResponseLineForErrorMessage() {
-        assertEquals("HTTP/1.1 404 Not Found", response.setInitialResponseLine(404));
+    public void testItServesIndexPageForRootRequest() throws IOException {
+        Response response = new Response(out, "/");
+        response.setupDataToBeSent();
+        response.send();
+
+        assertThat(outContent.toString(), containsString("Angie"));
     }
-
-    @Test
-    public void testItCreatesHeaderLines() {
-        Map<String, String> expectedHeaders = new HashMap<String, String>() {{
-                put("Connection", "Keep-Alive");
-                put("Content-Type", "text/html");
-            }};
-
-        response.createHeader("Connection", "Keep-Alive");
-        response.createHeader("Content-Type", "text/html");
-
-        assertEquals(expectedHeaders, response.headers);
-    }
-
-
-
 }
+
+//test file closes, verify it can be renamed
