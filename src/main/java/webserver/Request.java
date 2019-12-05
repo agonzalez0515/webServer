@@ -4,22 +4,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class Request {
-    public static final int REQUEST_METHOD = 0;
-    public static final int REQUEST_PATH = 1;
-    public BufferedReader in;
-    public String method;
-    public String path;
+    private static final int REQUEST_METHOD = 0;
+    private static final int REQUEST_PATH = 1;
+    private BufferedReader in;
+    private String method;
+    private String path;
 
     public Request (final BufferedReader in) {
         this.in = in;
     }
 
-    private void setRequestMethod(final String[] initialRequestLine) {
-        this.method = initialRequestLine[REQUEST_METHOD];
+    public String getRequestMethod() {
+        return this.method;
     }
 
-    private void setRequestPath(final String[] initialRequestLine) {
-        this.path = initialRequestLine[REQUEST_PATH];
+    public String getRequestPath() {
+        return this.path;
     }
 
     public boolean parse() throws IOException {
@@ -41,5 +41,13 @@ public class Request {
             header = in.readLine();
         }
         return true;
+    }
+
+    private void setRequestMethod(final String[] initialRequestLine) {
+        this.method = initialRequestLine[REQUEST_METHOD];
+    }
+
+    private void setRequestPath(final String[] initialRequestLine) {
+        this.path = initialRequestLine[REQUEST_PATH];
     }
 }
