@@ -9,19 +9,16 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import java.util.HashMap;
 import java.util.Map;
-
 
 public class Response {
     private static final String CRLF = "\r\n";
-    private static Map<Integer, String> responseStatus = buildResponseCodes();
+    private static final Map<Integer, String> responseStatus = buildResponseCodes();
     private PrintWriter out;
     private String path;
     private int statusCode;
     private String body = "";
     private String requestMethod;
-
 
     public Response(PrintWriter out, String path, String requestMethod) {
         this.out = out;
@@ -30,9 +27,10 @@ public class Response {
     }
 
     private static Map<Integer, String> buildResponseCodes() {
-        Map<Integer, String> responses = new HashMap<Integer, String>();
-        responses.put(200, "OK");
-        responses.put(404, "Not Found"); 
+        Map<Integer, String> responses = Map.of(
+            200, "OK",
+            404, "Not Found"
+        );
         return responses;
     }
 
@@ -61,8 +59,9 @@ public class Response {
         }
 
         if(!path.contains("html")) {
-            path = path +".html";
+            path = path + ".html";
         }
+
         return path;
     }
 
