@@ -6,11 +6,12 @@ import java.io.IOException;
 public class Request {
     private static final int REQUEST_METHOD = 0;
     private static final int REQUEST_PATH = 1;
-    private BufferedReader in;
+    private static final boolean INVALID_REQUEST_FORMAT = false;
+    private final BufferedReader in;
     private String method;
     private String path;
 
-    public Request (final BufferedReader in) {
+    public Request(final BufferedReader in) {
         this.in = in;
     }
 
@@ -24,24 +25,25 @@ public class Request {
 
     public boolean parse() throws IOException {
         final String initialLine = in.readLine();
-        if (initialLine == null || initialLine.length() == 0) { // there is no initial line means invalid request format
-            return false;
+        if (initialLine == null || initialLine.length() == 0) {
+            return INVALID_REQUEST_FORMAT;
         }
 
-        setRequestMethod(initialLine.split(" ", 3));
-        setRequestPath(initialLine.split(" ", 3));
+        final String[] splitInitialLineElements = initialLine.split(" ", 3);
+        setRequestMethod(splitInitialLineElements);
+        setRequestPath(splitInitialLineElements);
 
         String header = in.readLine();
         while (header != null && header.length() > 0) {
             final int separatorIndex = header.indexOf(":");
-            if (separatorIndex == -1) { //there is no separator means invalid request format
-                return false;
+            if (separatorIndex == -1) { 
+                return INVALID_REQUEST_FORMAT;
             }
 
             header = in.readLine();
         }
         return true;
-    }
+    }   
 
     private void setRequestMethod(final String[] initialRequestLine) {
         this.method = initialRequestLine[REQUEST_METHOD];
