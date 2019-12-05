@@ -19,7 +19,7 @@ class SocketHandler implements Runnable {
         Request request = new Request(in);
         try {
             request.parse();
-            Response response = new Response(out, request.path, request.method);
+            Response response = new Response(out, request.getRequestPath(), request.getRequestMethod());
             response.setupDataToBeSent();
             response.send();
 
