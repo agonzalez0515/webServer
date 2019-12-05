@@ -1,19 +1,25 @@
 package webserver;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import java.net.Socket;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SocketIOTest {
+    SocketIO io;
+
     @Mock
     Socket clientSocket;
 
@@ -23,37 +29,22 @@ public class SocketIOTest {
     @Mock
     OutputStream outputStream;
 
+    @Before
+    public void init() {
+        io = new SocketIO();
+    }
+
     @Test
     public void testSocketInputGetsCreated() throws IOException {
         when(clientSocket.getInputStream()).thenReturn(inputStream);
 
-        assertNotNull(SocketIO.createSocketReader(clientSocket));
+        assertNotNull(io.createSocketReader(clientSocket));
     }
 
     @Test
     public void testSocketOutputGetsCreated() throws IOException {
         when(clientSocket.getOutputStream()).thenReturn(outputStream);
 
-        assertNotNull(SocketIO.createSocketWriter(clientSocket));
-    }
-
-    @Test
-    public void testReadClientStreamLine() throws IOException{
-        String inputString = "Hello";
-        BufferedReader input = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes())));
-
-        assertEquals("Hello", SocketIO.readFromInputStream(input));
-    }
-
-    @Test
-    public void testWriteClientStreamLine() {
-        String inputString = "World";
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintWriter printWriter = new PrintWriter(outContent, true);
-
-        SocketIO.writeToOutputStream(printWriter, inputString);
-
-        assertEquals("World\n", outContent.toString());
+        assertNotNull(io.createSocketWriter(clientSocket));
     }
 }
-

@@ -1,109 +1,72 @@
 package webserver;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import java.util.HashMap;
 import java.util.Map;
 
-
 public class Response {
-    private static final String CRLF = "\r\n";
-    private static Map<Integer, String> responseStatus = buildResponseCodes();
-    private PrintWriter out;
-    private String path;
-    private int statusCode;
-    private String body;
+   private static final String CRLF = "\r\n";
+   private static final Map<Integer, String> responseStatus = buildResponseCodes();
+   private final int statusCode;
+   private final String body;
+   private final String contentType;
+   private final PrintWriter out;
 
+   public static class Builder {
+        private final int statusCode;
+        private final PrintWriter out;
+        private String body;
+        private String contentType;
 
-    public Response(PrintWriter out, String path) {
-        this.out = out;
-        this.path = path;
-    }
-
-    private static Map<Integer, String> buildResponseCodes() {
-        Map<Integer, String> responses = new HashMap<Integer, String>();
-        responses.put(200, "OK");
-        responses.put(404, "Not Found"); 
-        return responses;
-    }
-
-    public void setupDataToBeSent() throws IOException {
-        Path parsedPath = createFilePath(createPathString(path));
-        setStatusCode(parsedPath);
-        getHTML(parsedPath);
-    }
-
-    public void send() throws IOException {
-        out.print(createInitialResponseLine(statusCode));
-        out.print(CRLF);
-        out.print("Content-Length: " + body.length());
-        out.print(CRLF);
-        out.print("Content-Type: text/html");
-        out.print(CRLF);
-        out.print(CRLF);
-        out.println(body);
-    }
-
-    private String createPathString(String path) {
-        if (path.equals("/")) {
-            path = "/index.html";
+        public Builder(PrintWriter out, int statusCode) {
+            this.statusCode = statusCode;
+            this.out = out;
         }
 
-        if(!path.contains("html")) {
-            path = path +".html";
+        public Builder withBody(String body) {
+            this.body = body;
+            return this;
         }
-        return path;
-    }
 
-    private void setStatusCode(Path path) {
-        if (Files.exists(path)) {
-            this.statusCode = 200;
-        } else {
-            this.statusCode = 404;
+        public Builder withContentType(String contentType) {
+            this.contentType = contentType;
+            return this;
         }
-    }
 
-    private void getHTML(Path parsedPath) throws IOException {
-        try(FileInputStream file = getFile(parsedPath)) {
-            String htmlString = createHTMLString(file);
-            this.body = htmlString;
+        public Response build() {
+            return new Response(out, this);
         }
-    }
+   }
 
-    private FileInputStream getFile(Path path) {
-        try {
-            FileInputStream file = new FileInputStream(path.toString());
-            return file;
-        } catch (FileNotFoundException e) {
-            Path errorFile = createFilePath("/404.html");
-            return getFile(errorFile);
-        }
-    }
+   private Response(PrintWriter out, Builder builder) {
+       this.statusCode = builder.statusCode;
+       this.contentType = builder.contentType;
+       this.body = builder.body;
+       this.out = out;
+   }
 
-    private Path createFilePath(String path) {
-        Path filePath = FileSystems.getDefault().getPath(path.substring(1));
-        return filePath;
-    }
+   private static Map<Integer, String> buildResponseCodes() {
+       var responses = Map.of(
+           200, "OK",
+           404, "Not Found"
+       );
+       return responses;
+   }
 
-    private String createHTMLString(FileInputStream file) throws IOException {
-        StringBuffer buf = new StringBuffer();
+   private String createInitialResponseLine(int statusCode) {
+       String initialResponseLine = "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
+       return initialResponseLine;
+   }
 
-        int c;
-        while ((c = file.read()) != -1) {
-            buf.append((char) c);
-        }
-        return buf.toString();
-    }
-
-    private String createInitialResponseLine(int statusCode) {
-        String initialResponseLine = "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
-        return initialResponseLine;
-    }
+   public void send() throws IOException {
+       out.print(createInitialResponseLine(statusCode));
+       out.print(CRLF);
+       out.print(contentType);
+       out.print(CRLF);
+       out.print("Content-Length: " + body.length());
+       out.print(CRLF);
+       out.print(CRLF);
+       out.println(body);
+   }
 }

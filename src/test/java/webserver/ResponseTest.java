@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.core.IsNot.not;
 
 
 public class ResponseTest {
@@ -17,8 +18,7 @@ public class ResponseTest {
 
     @Test
     public void  testSetsInitialResponseLineForOkMessage() throws IOException {
-        Response response = new Response(out, "/src/test/resources/test.html");
-        response.setupDataToBeSent();
+        Response response = new Response.Builder(out, 200).withContentType("Content-Type: text/html; charset=utf-8").withBody("<!DOCTYPE html>").build();
         response.send();
 
         assertThat(outContent.toString(), containsString("HTTP/1.1 200 OK") );
@@ -26,39 +26,15 @@ public class ResponseTest {
 
     @Test
     public void  testSetsInitialResponseLineForNotFoundMessage() throws IOException {
-        Response response = new Response(out, "/hey.html");
-        response.setupDataToBeSent();
+        Response response = new Response.Builder(out, 404).withContentType("Content-Type: text/html; charset=utf-8").withBody("<!DOCTYPE html>").build();
         response.send();
 
         assertThat(outContent.toString(), containsString("HTTP/1.1 404 Not Found"));
     }
-
-    @Test
-    public void testItSendsHTML() throws IOException {
-        Response response = new Response(out, "/src/test/resources/test.html");
-        response.setupDataToBeSent();
-        response.send();
-
-        assertThat(outContent.toString(), containsString("Test File"));
-    }
-
-    @Test
-    public void testItFindsAPathIfItDoesNotHaveExtension() throws IOException {
-        Response response = new Response(out, "/src/test/resources/test");
-        response.setupDataToBeSent();
-        response.send();
-
-        assertThat(outContent.toString(), containsString("Test File"));
-    }
-
-    @Test
-    public void testItServesIndexPageForRootRequest() throws IOException {
-        Response response = new Response(out, "/");
-        response.setupDataToBeSent();
-        response.send();
-
-        assertThat(outContent.toString(), containsString("Angie"));
-    }
 }
 
-//test file closes, verify it can be renamed
+
+//need to test
+//send()
+//no content type being set
+//no body being set
