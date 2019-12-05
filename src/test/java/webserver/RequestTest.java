@@ -1,10 +1,7 @@
 package webserver;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.BufferedReader;
@@ -13,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RequestTest {
@@ -82,6 +78,7 @@ public class RequestTest {
 
         assertEquals("/hello.html", request.path);
     }
+
 }
 
 

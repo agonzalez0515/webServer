@@ -19,12 +19,14 @@ public class Response {
     private PrintWriter out;
     private String path;
     private int statusCode;
-    private String body;
+    private String body = "";
+    private String requestMethod;
 
 
-    public Response(PrintWriter out, String path) {
+    public Response(PrintWriter out, String path, String requestMethod) {
         this.out = out;
         this.path = path;
+        this.requestMethod = requestMethod;
     }
 
     private static Map<Integer, String> buildResponseCodes() {
@@ -37,7 +39,9 @@ public class Response {
     public void setupDataToBeSent() throws IOException {
         Path parsedPath = createFilePath(createPathString(path));
         setStatusCode(parsedPath);
-        getHTML(parsedPath);
+        if (requestMethod.equals("GET")){
+            getHTML(parsedPath);
+        }
     }
 
     public void send() throws IOException {
@@ -45,7 +49,7 @@ public class Response {
         out.print(CRLF);
         out.print("Content-Length: " + body.length());
         out.print(CRLF);
-        out.print("Content-Type: text/html");
+        out.print("Content-Type: text/html; charset=utf˝-8");
         out.print(CRLF);
         out.print(CRLF);
         out.println(body);

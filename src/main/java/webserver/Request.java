@@ -10,32 +10,30 @@ public class Request {
     public String method;
     public String path;
 
-    public Request (BufferedReader in) {
+    public Request (final BufferedReader in) {
         this.in = in;
-        this.method = "";
-        this.path = "";
     }
 
-    private void getRequestMethod(String[] initialRequestLine) {
+    private void setRequestMethod(final String[] initialRequestLine) {
         this.method = initialRequestLine[REQUEST_METHOD];
     }
 
-    private void getRequestPath(String[] initialRequestLine) {
+    private void setRequestPath(final String[] initialRequestLine) {
         this.path = initialRequestLine[REQUEST_PATH];
     }
 
     public boolean parse() throws IOException {
-        String initialLine = in.readLine();
-        if (initialLine == null || initialLine.length() == 0) { //there is no initial line means invalid request format
+        final String initialLine = in.readLine();
+        if (initialLine == null || initialLine.length() == 0) { // there is no initial line means invalid request format
             return false;
         }
 
-        getRequestMethod(initialLine.split(" ",3));
-        getRequestPath(initialLine.split(" ",3));
+        setRequestMethod(initialLine.split(" ", 3));
+        setRequestPath(initialLine.split(" ", 3));
 
         String header = in.readLine();
-        while (header != null && header.length() > 0 ) {
-            int separatorIndex = header.indexOf(":");
+        while (header != null && header.length() > 0) {
+            final int separatorIndex = header.indexOf(":");
             if (separatorIndex == -1) { //there is no separator means invalid request format
                 return false;
             }
