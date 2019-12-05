@@ -70,5 +70,3 @@ public class ResponseTest {
         assertThat(outContent.toString(), not(containsString("<!DOCTYPE html>")));
     }
 }
-
-//test file closes, verify it can be renamed

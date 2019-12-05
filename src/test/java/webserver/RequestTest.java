@@ -76,7 +76,4 @@ public class RequestTest {
 
         assertEquals(false, request.parse());
     }
-
 }
-
-
