@@ -21,10 +21,10 @@ public class SocketCreatorTest {
     @Mock
     ServerSocket mockServerSocket;
 
-
     @Test
     public void testServerSocketGetsCreated() throws IOException {
-        ServerSocket server = SocketCreator.createServerSocket();
+        SocketCreator socketCreator = new SocketCreator();
+        ServerSocket server = socketCreator.createServerSocket();
 
         assertNotNull(server);
         server.close();
@@ -32,7 +32,8 @@ public class SocketCreatorTest {
 
     @Test
     public void testServerSocketWithSpecificPortGetsCreated() throws IOException {
-        ServerSocket testServerSocket = SocketCreator.createServerSocket();
+        SocketCreator socketCreator = new SocketCreator();
+        ServerSocket testServerSocket = socketCreator.createServerSocket();
 
         assertEquals(testServerSocket.getLocalPort(), 5000);
         testServerSocket.close();
@@ -40,8 +41,9 @@ public class SocketCreatorTest {
 
     @Test
     public void testClientSocketGetsCreated() throws IOException {
+        SocketCreator socketCreator = new SocketCreator();
         when(mockServerSocket.accept()).thenReturn(new Socket());
 
-        assertNotNull(SocketCreator.createClientConnection(mockServerSocket));
+        assertNotNull(socketCreator.createClientConnection(mockServerSocket));
     }
 }

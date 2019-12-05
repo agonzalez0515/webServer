@@ -1,16 +1,17 @@
 package webserver;
 
 import java.io.IOException;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketCreator {
-    public static ServerSocket createServerSocket() throws IOException {
+    public ServerSocket createServerSocket() throws IOException {
         int portNum = getPortNumber();
         return new ServerSocket(portNum);
     }
 
-    public static Socket createClientConnection(ServerSocket server) throws IOException {
+    public Socket createClientConnection(ServerSocket server) throws IOException {
         return server.accept();
     }
 
