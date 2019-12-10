@@ -10,18 +10,15 @@ import java.nio.file.Path;
 
 
 public class HtmlHandler {
-
   public static boolean fileExists(String path) {
-    Path parsedPath = createFilePath(createPathString(path));
+    Path parsedPath = createFilePath(path);
     return Files.exists(parsedPath);
   }
 
   public static String getHtml(String path) throws IOException {
-    Path parsedPath = createFilePath(createPathString(path));
-
+    Path parsedPath = createFilePath(path);
     try(FileInputStream file = getFile(parsedPath)) {
-        String htmlString = createHTMLString(file);
-        return htmlString;
+        return createHTMLString(file);
     }
   }
 
@@ -49,16 +46,4 @@ public class HtmlHandler {
       }
       return buf.toString();
   }
-
-  private static String createPathString(String path) {
-    if (path.equals("/")) {
-        path = "/index.html";
-    }
-
-    if (!path.contains("html")) {
-        path = path + ".html";
-    }
-
-    return path;
-}
 }
