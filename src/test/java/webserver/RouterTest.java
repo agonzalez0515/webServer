@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
@@ -15,7 +16,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 
 public class RouterTest {
   Router router;
-  @Spy Routes routesSpy = new Routes();
+  @Mock Controller controller = new Controller();
+  @Spy Routes routesSpy = new Routes(controller);
 
   @Before
   public void init() {

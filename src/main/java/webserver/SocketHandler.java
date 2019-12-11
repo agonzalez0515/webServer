@@ -20,7 +20,9 @@ class SocketHandler implements Runnable {
 
     public void run() {
         Request request = new Request(in);
-        Router router = new Router();
+        Controller controller = new Controller();
+        Routes routes = new Routes(controller);
+        Router router = new Router(routes);
 
         try {
             request.parse();
