@@ -1,27 +1,23 @@
 package webserver;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import java.util.Map;
 
 public class Response {
-   private static final String CRLF = "\r\n";
-   private static final Map<Integer, String> responseStatus = buildResponseCodes();
-   private final int statusCode;
-   private final String body;
-   private final String contentType;
-   private final PrintWriter out;
+    private static final String CRLF = "\r\n";
+    private static final Map<Integer, String> responseStatus = buildResponseCodes();
+    private final int statusCode;
+    private final String body;
+    private final String contentType;
+    private final int bodyLength;
 
-   public static class Builder {
+    public static class Builder {
         private final int statusCode;
-        private final PrintWriter out;
-        private String body;
+        private String body = "";
         private String contentType;
+        private int bodyLength;
 
-        public Builder(PrintWriter out, int statusCode) {
+        public Builder(int statusCode) {
             this.statusCode = statusCode;
-            this.out = out;
         }
 
         public Builder withBody(String body) {
@@ -34,39 +30,40 @@ public class Response {
             return this;
         }
 
-        public Response build() {
-            return new Response(out, this);
+        public Builder withBodyLength(int length) {
+            this.bodyLength = length;
+            return this;
         }
-   }
 
-   private Response(PrintWriter out, Builder builder) {
-       this.statusCode = builder.statusCode;
-       this.contentType = builder.contentType;
-       this.body = builder.body;
-       this.out = out;
-   }
+        public String build() {
+            Response res = new Response(this);
+            return res.toResponseString();
+        }
+    }
 
-   private static Map<Integer, String> buildResponseCodes() {
-       var responses = Map.of(
-           200, "OK",
-           404, "Not Found"
-       );
-       return responses;
-   }
+    private Response(Builder builder) {
+        this.statusCode = builder.statusCode;
+        this.contentType = builder.contentType;
+        this.body = builder.body;
+        this.bodyLength = builder.bodyLength;
+    }
 
-   private String createInitialResponseLine(int statusCode) {
-       String initialResponseLine = "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
-       return initialResponseLine;
-   }
+    private static Map<Integer, String> buildResponseCodes() {
+        var responses = Map.of(200, "OK", 404, "Not Found");
+        return responses;
+    }
 
-   public void send() throws IOException {
-       out.print(createInitialResponseLine(statusCode));
-       out.print(CRLF);
-       out.print(contentType);
-       out.print(CRLF);
-       out.print("Content-Length: " + body.length());
-       out.print(CRLF);
-       out.print(CRLF);
-       out.println(body);
-   }
+    private String createInitialResponseLine(int statusCode) {
+        String initialResponseLine = "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
+        return initialResponseLine;
+    }
+
+    public String toResponseString() {
+        String initialLine = createInitialResponseLine(statusCode);
+        String contentLengthHeader = "Content-Length: " + bodyLength;
+        String responseString = initialLine + CRLF + contentType + CRLF + contentLengthHeader + CRLF + CRLF + body
+                + "\n";
+
+        return responseString;
+    }
 }

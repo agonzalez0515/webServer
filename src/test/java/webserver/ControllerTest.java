@@ -18,35 +18,42 @@ public class ControllerTest {
 
   @Test
   public void testItReturnsHomePage() throws IOException {
-    String htmlString = controller.index();
+    String htmlString = controller.getIndex();
 
     assertThat(htmlString, containsString("Angie"));
   }
 
   @Test
   public void testItReturnsHealthCheck() throws IOException {
-    String htmlString = controller.healthCheck();
+    String htmlString = controller.getHealthCheck();
 
     assertThat(htmlString, containsString("Health Check"));
   }
 
   @Test
   public void testItReturnsAllListings() throws IOException {
-    String htmlString = controller.listingList();
+    String htmlString = controller.getListingList();
 
     assertThat(htmlString, containsString("todo-list"));
   }
 
   @Test
   public void testItReturnsOneListing() throws IOException {
-    String htmlString = controller.listingDetail(1);
+    String htmlString = controller.getListingDetail(1);
 
     assertThat(htmlString, containsString("listing-detail"));
   }
 
   @Test
+  public void testItReturns404WhenPageNotFound() throws IOException{
+    String htmlString = controller.getNotFound();
+
+    assertThat(htmlString, containsString("File Not Found"));
+  }
+
+  @Test
   public void testItReturns404PageWhenDetailNotFound() throws IOException {
-    String htmlString = controller.listingDetail(2);
+    String htmlString = controller.getListingDetail(2);
 
     assertThat(htmlString, containsString("File Not Found"));
   }

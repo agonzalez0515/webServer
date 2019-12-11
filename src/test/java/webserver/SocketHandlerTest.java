@@ -23,6 +23,9 @@ public class SocketHandlerTest {
     @Mock
     Socket clientSocket;
 
+    @Mock
+    ResponseBody responseBody;
+
     @Test
     public void testServerCanSendResponse() throws IOException {
         String inputString = "GET / HTTP/1.1\n";
@@ -51,7 +54,5 @@ public class SocketHandlerTest {
       verify(out).close();
       verify(in).close();
       verify(spyClientSocket).close();
-    }
-
-   
+    }   
 }

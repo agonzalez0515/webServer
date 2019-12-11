@@ -19,23 +19,19 @@ class SocketHandler implements Runnable {
     }
 
     public void run() {
-        int statusCode;
         Request request = new Request(in);
+        Controller controller = new Controller();
+        Routes routes = new Routes(controller);
+        Router router = new Router(routes);
 
         try {
             request.parse();
+            
             String path = request.getRequestPath();
             String method = request.getRequestMethod();
-            String htmlToSend = HtmlHandler.getHtml(path);
+            String response = router.route(path, method);
             
-            if (HtmlHandler.fileExists(path)) {
-                statusCode = 200;
-            } else {
-                statusCode = 404;
-            }
-
-            Response response = new Response(out, method, htmlToSend, statusCode);
-            response.send();
+            out.println(response);
 
         } catch (IOException e) {
             e.printStackTrace();
