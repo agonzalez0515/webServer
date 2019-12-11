@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-public class HtmlHandler {
+public class ResponseBody {
   public static boolean fileExists(String path) {
     Path parsedPath = createFilePath(path);
     return Files.exists(parsedPath);
