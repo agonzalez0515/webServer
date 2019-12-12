@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>TODO Detail</title>
+    <link rel="stylesheet" href="/layout-styles">
+
+    <style>
+      iframe { width: 100%; border: none; }
+      nav, section { margin-bottom: 1em; }
+    </style>
+  </head>
+
+  <body>
+    <h1>TODO Task</h1>
+    <main>
+      <nav>
+        <a href="/todo" rel="collection">Back to List</a> |
+        <a href="<%= url %>/edit" rel="edit-form">Edit</a>
+      </nav>
+
+      <section>
+        <form id="delete-todo" method="post" action="<%= url %>/delete">
+          <button type="submit">Delete Task</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Task</h2>
+        <p><%= task[:task] %></p>
+      </section>
+
+      <section>
+        <h2>Completed</h2>
+        <form method="post" action="<%= url %>/toggle">
+          <p>
+            <% if task[:completed]
+              %><span class="complete">&#10003;</span><%
+            else
+              %><span class="incomplete">&#10007;</span><%
+            end %>
+            <button type="submit">Toggle</button>
+          </p>
+        </form>
+      </section>
+
+      <section id="errors"></section>
+    </main>
+
+    <script>
+      const form = document.getElementById("delete-todo");
+      form.onsubmit = async (event) => {
+        event.preventDefault();
+
+        errorsContainer = document.getElementById("errors");
+        errorsContainer.innerHTML = "";
+
+        const response = await fetch("<%= url %>", { method: 'DELETE' });
+
+        if (response.status >= 200 && response.status < 400) {
+          window.location = "/todo";
+        } else {
+          errors = document.createElement("iframe");
+          console.log(errors.srcdoc);
+          const body = await response.text();
+          errors.srcdoc = body;
+          errorsContainer.appendChild(errors);
+        }
+      }
+    </script>
+  </body>
+</html>
+
