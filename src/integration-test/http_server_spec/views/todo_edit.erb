@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>TODO Detail</title>
+    <link rel="stylesheet" href="/layout-styles">
+
+    <style>
+      table, td { padding: .5em; }
+      label { font-weight: bold; }
+      button { width: 100%; }
+      iframe { width: 100%; border: none; }
+    </style>
+  </head>
+
+  <body>
+    <h1>TODO Task</h1>
+    <main>
+      <nav>
+        <a href="/todo">Back to List</a> |
+        <a href="<%= url %>">Back to Detail Page</a>
+      </nav>
+
+      <section>
+        <form id="edit-todo" method="post" action="<%= url %>/edit">
+          <table>
+            <tr>
+              <td><label for="task">Task</label></td>
+              <td><input type="text" name="task" value="<%= task[:task] %>"></td>
+            </tr>
+            <tr>
+              <td><label for="completed">Completed</label></td>
+              <td><input type="checkbox" name="completed" checked="<%= task[:completed] %>"></td>
+            </tr>
+            <tr>
+              <td colspan="2"><button type="submit">Submit</button></td>
+            </tr>
+          </table>
+        </form>
+      </section>
+
+      <section id="errors"></section>
+    </main>
+
+    <script>
+      const form = document.getElementById("edit-todo");
+      form.onsubmit = async (event) => {
+        event.preventDefault();
+
+        errorsContainer = document.getElementById("errors");
+        errorsContainer.innerHTML = "";
+
+        const response = await fetch("<%= url %>", {
+          method: 'PUT',
+          body: new FormData(form)
+        });
+
+        if (response.status >= 200 && response.status < 400) {
+          window.location = "<%= url %>";
+        } else {
+          errors = document.createElement("iframe");
+          console.log(errors.srcdoc);
+          const body = await response.text();
+          errors.srcdoc = body;
+          errorsContainer.appendChild(errors);
+        }
+      }
+    </script>
+  </body>
+</html>
+
