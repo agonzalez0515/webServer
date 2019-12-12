@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>TODO List</title>
+    <link rel="stylesheet" href="/layout-styles">
+
+    <style>
+      table { width: 100%; border-spacing: 0; }
+      td { padding: .5em; }
+      tr:nth-child(odd) { background: lightblue; }
+      tr:nth-child(even) { background: lightcyan; }
+      th { background: white; }
+      td.completed { border-left: 1px solid grey; text-align: center; }
+      td.task { width: 100%; }
+      input, button { box-sizing: border-box; width: 100%; padding: .5em; }
+      section { margin-bottom: 1em; }
+    </style>
+  </head>
+
+  <body>
+    <h1>TODO List</h1>
+
+    <main>
+      <section>
+        <form method="get" action="/todo">
+          <input type="text" name="filter" value="<%= filter %>" placeholder="Filter Tasks">
+        </form>
+      </section>
+
+      <section>
+        <form method="post" action="/todo">
+          <table>
+            <tr>
+              <th class="task">Task</th>
+              <th class="completed">Completed</th>
+            </tr>
+            <% tasks.each do |url, task| %>
+              <tr>
+                <td class="task"><a href="<%= url %>" rel="item"><%= task[:task] %></a></td>
+                <td class="completed"><% if task[:completed] %>&#10003;<% else %>&#10007;<% end %></td>
+              </tr>
+            <% end %>
+            <tr>
+              <td class="task"><input type="text" name="task"></td>
+              <td class="completed"><button type="submit">Add</button></td>
+            </tr>
+          </table>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+source "https://rubygems.org"
+
+gem "spinach"
+gem "rspec"
+
+group :development, :test do
+  gem "httparty"
+  gem "content-type"
+  gem "nokogiri"
+  gem "sinatra"
+end
