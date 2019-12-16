@@ -17,6 +17,8 @@ public class Routes {
                 "/", controller.getIndex(), 
                 "/todo", controller.getListingList(),
                 "/todo/1", controller.getListingDetail(1),
+                "/todo/2", controller.getListingDetail(2),
+                "/todo/3", controller.getListingDetail(3),
                 "/health-check", controller.getHealthCheck()
                 );
 

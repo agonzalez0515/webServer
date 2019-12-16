@@ -53,7 +53,7 @@ public class ControllerTest {
 
   @Test
   public void testItReturns404PageWhenDetailNotFound() throws IOException {
-    String htmlString = controller.getListingDetail(2);
+    String htmlString = controller.getListingDetail(2000);
 
     assertThat(htmlString, containsString("File Not Found"));
   }
