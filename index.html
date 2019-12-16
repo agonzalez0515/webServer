@@ -3,13 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Homepage</title>
-    </head>
+    <link rel="stylesheet" type="text/css" href="/public/css/index.css">
+</head>
     <body>
-        <h1> Angie's ToDo App</h1>
+        <header>
+            <h1> Angie's ToDo App</h1>
+        </header>
         <main>
             <p>
                 <a href="/todo">All My ToDo Items</a>
             </p>
         </main>
+        <footer>
+            &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
+        </footer>
     </body>
 </html>
+
+<style>
+    body {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-family: Courier New;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    main {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        font-size: 2rem;
+    }
+
+    footer {
+        background-color: lightpink;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        height: 1.5rem;
+        align-items: center;
+    }
+</style>

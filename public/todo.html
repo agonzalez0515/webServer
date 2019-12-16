@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODOS</title>
+</head>
+<body>
+    <header>
+        <h1 class="title">Things to do:</h1>
+    </header>
+    <main>
+        <section class="todo-list">
+            <ul>
+                <li><a href="/todo/1" rel="item"> Go to target</a></li>
+                <li><a href="/todo/2" rel="item"> Read a book</a></li>
+                <li><a href="/todo/3" rel="item"> Walk the dog</a></li>
+            </ul>
+        </section>
+        <section>
+            <a href="/"> Back to home</a>
+        </section>
+    </main>
+    <footer>
+        &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
+    </footer>
+</body>
+</html>
+
+<style>
+    body {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        font-family: Courier New;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .todo-list {
+        width: 40rem;
+    }
+
+    .title {
+        align-self: center;
+        color: rebeccapurple;
+        font-size: 2.5rem;
+    }
+
+    ul {
+        list-style: circle;
+    }
+
+    li {
+        padding-top: 1rem;
+        font-size: 1.5rem;
+        border-bottom: 2px solid black;
+    }
+
+    main {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        font-size: 2rem;
+        justify-content: space-between;
+    }
+
+    footer {
+        background-color: lightpink;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        height: 1.5rem;
+        align-items: center;
+    }
+
+</style>
