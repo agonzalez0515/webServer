@@ -9,9 +9,11 @@ This project uses:
 * Mockito
 * Deployed to Heroku
 
-### Run Server Locally on port 5000
+### Run Server 
 
-```gradle run```
+```gradle run``` will default to port 5000
+
+```gradle run --args="port=8080"``` will run on port 8080
 
 ### Run unit tests
 

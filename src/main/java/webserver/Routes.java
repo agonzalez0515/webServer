@@ -26,6 +26,8 @@ public class Routes {
                 "/", controller.headIndex(), 
                 "/todo", controller.headListingList(),
                 "/todo/1", controller.headListingDetail(1),
+                "/todo/2", controller.headListingDetail(2),
+                "/todo/3", controller.headListingDetail(3),
                 "/health-check", controller.headHealthCheck()
                 );
 

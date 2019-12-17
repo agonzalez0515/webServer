@@ -6,6 +6,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketCreator {
+    public ServerSocket createServerSocketWithPort(int portNum) throws IOException {
+        return new ServerSocket(portNum);
+    }
+
     public ServerSocket createServerSocket() throws IOException {
         int portNum = getPortNumber();
         return new ServerSocket(portNum);
@@ -18,10 +22,4 @@ public class SocketCreator {
     private static int getPortNumber() {
         int portNumber;
         try {
-            portNumber = Integer.parseInt(System.getenv("PORT"));
-        } catch (NumberFormatException e) {
-            portNumber = 5000;
-        }
-        return portNumber;
-    }
-}
+            portNum  
