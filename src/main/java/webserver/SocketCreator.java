@@ -19,7 +19,7 @@ public class SocketCreator {
         return server.accept();
     }
 
-    private static int getPortNumber() {
+    private static int getPortNumber() { //FIXME move this out to cli parser or setup class
         int portNumber;
         try {
             portNumber = Integer.parseInt(System.getenv("PORT"));

@@ -31,7 +31,7 @@ public class Controller {
     public String getDirectoryFile(String path) throws IOException {
         int responseCode = 200;
         String body = ResponseBody.getHtml(path);
-        if (body.contains("File Not Found")) {  //FIXME: refactor
+        if (body.contains("File Not Found")) {  //FIXME: need to handle this better for each route?
             responseCode = 404;
         }
 
