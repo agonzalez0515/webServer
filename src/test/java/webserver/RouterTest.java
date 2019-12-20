@@ -17,7 +17,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 public class RouterTest {
   Router router;
   @Mock Controller controller = new Controller();
-  @Spy Routes routesSpy = new Routes(controller);
+  @Spy Routes routesSpy = new Routes(controller, "");
 
   @Before
   public void init() {

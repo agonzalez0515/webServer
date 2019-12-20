@@ -57,4 +57,18 @@ public class ControllerTest {
 
     assertThat(htmlString, containsString("File Not Found"));
   }
+
+  @Test
+  public void testItReturnsResponseFromCustomDirectory() throws IOException {
+    String htmlString = controller.getDirectoryFile("/public/example.txt");
+
+    assertThat(htmlString, containsString("This is an example file"));
+  }
+
+  @Test
+  public void testItReturns404WhenFileFromCustomDirectoryNotFound() throws IOException {
+    String htmlString = controller.getDirectoryFile("/public/hey.txt");
+
+    assertThat(htmlString, containsString("File Not Found"));
+  }
 }

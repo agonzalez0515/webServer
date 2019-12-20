@@ -26,9 +26,3 @@ public class ResponseTest {
         assertThat(response, containsString("HTTP/1.1 404 Not Found"));
     }
 }
-
-
-//need to test
-//send()
-//no content type being set
-//no body being set
