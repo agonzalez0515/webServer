@@ -7,10 +7,12 @@ public class Routes {
     private Map<String, String> getRoutes;
     private Map<String, String> headRoutes;
     private final Controller controller;
+    private String directory;
 
 
-    public Routes(Controller controller) {
+    public Routes(Controller controller, String directory) {
         this.controller = controller;
+        this.directory = directory;
 
         try {
             getRoutes = Map.of(
@@ -37,8 +39,14 @@ public class Routes {
     }
 
     public String get(String path) throws IOException {
-        final String response = getRoutes.get(path);
-        return  response != null ? response : controller.getNotFound();
+        if (getRoutes.containsKey(path)) {
+            final String response = getRoutes.get(path);
+            return response != null ? response : controller.getNotFound();
+        } else if (!getRoutes.containsKey(path) && !directory.equals("")) {
+            return controller.getDirectoryFile(path);
+        } else {
+            return controller.getNotFound();
+        }
     }
 
     public String head(String path) throws IOException {

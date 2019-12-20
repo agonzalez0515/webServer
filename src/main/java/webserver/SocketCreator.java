@@ -22,4 +22,10 @@ public class SocketCreator {
     private static int getPortNumber() {
         int portNumber;
         try {
-            portNum  
+            portNumber = Integer.parseInt(System.getenv("PORT"));
+        } catch (NumberFormatException e) {
+            portNumber = 5000;
+        }
+        return portNumber;
+    }
+}

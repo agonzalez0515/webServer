@@ -11,17 +11,19 @@ class SocketHandler implements Runnable {
     private PrintWriter out;
     private SocketIO io = new SocketIO();
     private Socket client;
+    private String directory;
 
-    public SocketHandler(Socket client) throws  IOException {
+    public SocketHandler(Socket client, String directory) throws  IOException {
         this.in = io.createSocketReader(client);
         this.out = io.createSocketWriter(client);
         this.client = client;
+        this.directory = directory;
     }
 
     public void run() {
         Request request = new Request(in);
         Controller controller = new Controller();
-        Routes routes = new Routes(controller);
+        Routes routes = new Routes(controller, directory);
         Router router = new Router(routes);
 
         try {
