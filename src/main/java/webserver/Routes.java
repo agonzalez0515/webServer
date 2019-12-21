@@ -21,7 +21,7 @@ public class Routes {
                 "/todo/1", controller.getListingDetail(1),
                 "/todo/2", controller.getListingDetail(2),
                 "/todo/3", controller.getListingDetail(3),
-                "/health-check", controller.getHealthCheck()
+                "/health_check", controller.getHealthCheck()
                 );
 
             headRoutes = Map.of(
@@ -30,7 +30,7 @@ public class Routes {
                 "/todo/1", controller.headListingDetail(1),
                 "/todo/2", controller.headListingDetail(2),
                 "/todo/3", controller.headListingDetail(3),
-                "/health-check", controller.headHealthCheck()
+                "/health_check", controller.headHealthCheck()
                 );
 
         } catch (IOException e) {
@@ -54,5 +54,3 @@ public class Routes {
         return response != null ? response : controller.headNotFound();
     }
 }
-
-//FIXME refactor all of it! 

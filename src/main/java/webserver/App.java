@@ -11,14 +11,17 @@ public class App {
     private static final String NO_DIRECTORY_SPECIFIED = "";
     private static final String NO_PORT_SPECIFIED = "";
 
+    private static SocketCreator socketCreator = new SocketCreator();
     private static ServerSocket server;
-    private static SocketCreator socketCreator = new SocketCreator(); //when do things go here and when should they be declared inside the method?
 
     public static void main(String[] args) {
         String port = System.getProperty(PORT);
         String directory = System.getProperty(DIRECTORY); 
 
         if (directory == null) { directory = NO_DIRECTORY_SPECIFIED; }
+
+        // int port = CliParser.getPort();
+        // String directory = CliParser.getDirectory();
 
         
         try {
@@ -27,7 +30,10 @@ public class App {
             } else {
                 int portNum = Integer.parseInt(port);
                 server = socketCreator.createServerSocketWithPort(portNum);
-            } //FIXME refactor to cli parser class
+            }
+            
+            // server = socketCreator.createServerSocketWithPort(port);
+
 
             while (true) {
                 Socket client = socketCreator.createClientConnection(server);
