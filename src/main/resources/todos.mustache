@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>TODOS</title>
+    </head>
+    <body>
+      <main class="container">
+          <h1 class="title">My ToDos</h1>
+          <section class="todo-list">
+              <ul>
+                  {{#todos}}
+                  <li><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
+                  {{/todos}}
+              </ul>
+          </section>
+          <section>
+              <form action="/todo" method="post"> 
+                  <label for="new-todo">Title:</label>
+                  <input type="text" id="new-todo" name="title">
+                   <label for="text">Details:</label>
+                  <input type="text" id="text" name="text">
+                  <button type="submit">Submit</button>
+              </form>
+          </section>
+      </main>
+    </body>
+</html>
+
+<style>
+    body {
+        font-family: Courier New;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title {
+        align-self: center;
+        color: rebeccapurple;
+        font-size: 2.5rem;
+    }
+
+    .todo-list {
+        margin: 2rem 30rem;
+    }
+
+    li {
+        padding: 1rem;
+        font-size: 1.5rem;
+        background: lavender;
+        border: 2px solid black;
+        border-bottom: none;
+    }
+
+    li:last-child {
+        border-bottom: 2px solid black;
+    }
+
+</style>

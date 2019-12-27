@@ -1,62 +1,52 @@
 package webserver;
 
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import webserver.request.Request;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.containsString;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class RouterTest {
-  Router router;
-  @Mock Controller controller = new Controller();
-  @Spy Routes routesSpy = new Routes(controller, "");
+    Router router;
 
-  @Before
-  public void init() {
-      MockitoAnnotations.initMocks(this);
-      router = new Router(routesSpy);
-  }
+    @Before
+    public void init() {
+        router = new Router();
+    }
 
-  @Test
-  public void testItRoutesGetRequestsToController() throws IOException {
-    router.route("/", "get");
+    @Mock
+    Request request;
 
-   verify(routesSpy).get("/"); 
-  }
+    @Test
+    public void testItReturnsAStringBasedOffTheRoute() {
+        when(request.getPath()).thenReturn("/hello");
+        when(request.getMethod()).thenReturn("GET");
+        router.get("/hello", (Request req) -> {
+            return "hello";
+        });
+        String res = router.route(request);
 
-  @Test
-  public void testItRoutesHeadRequestsToController() throws IOException {
-    router.route("/", "head");
+        assertEquals("hello", res);
+    }
 
-   verify(routesSpy).head("/"); 
-  }
+    @Test
+    public void testItReturnsNotFoundStringWhenTheresNoMatchingRoute() {
+        when(request.getPath()).thenReturn("/hello");
+        when(request.getMethod()).thenReturn("GET");
+        router.get("/blah", (Request req) -> {
+            return "blah blah";
+        });
+        String res = router.route(request);
 
-  @Test
-  public void testItRoutesAllCapGETRequestsToController() throws IOException {
-    router.route("/", "GET");
+        assertThat(res, containsString("File Not Found"));
+    }
 
-   verify(routesSpy).get("/"); 
-  }
-
-  @Test
-  public void testItRoutesAllCapHEADRequestsToController() throws IOException {
-    router.route("/", "HEAD");
-
-   verify(routesSpy).head("/"); 
-  }
-
-  @Test
-  public void testItReturnsAResponseString() throws IOException {
-    String response = router.route("/", "get");
-
-    assertThat(response, containsString("HTTP/1.1 200 OK"));
-  }
 }

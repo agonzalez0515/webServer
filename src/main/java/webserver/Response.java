@@ -1,20 +1,20 @@
 package webserver;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Response {
     private static final String CRLF = "\r\n";
     private static final Map<Integer, String> responseStatus = buildResponseCodes();
     private final int statusCode;
     private final String body;
-    private final String contentType;
-    private final int bodyLength;
+    private final HashMap<String, String> headers;
 
     public static class Builder {
         private final int statusCode;
         private String body = "";
-        private String contentType;
-        private int bodyLength;
+        private HashMap<String, String> headers = new HashMap<String, String>();
 
         public Builder(int statusCode) {
             this.statusCode = statusCode;
@@ -25,13 +25,8 @@ public class Response {
             return this;
         }
 
-        public Builder withContentType(String contentType) {
-            this.contentType = contentType;
-            return this;
-        }
-
-        public Builder withBodyLength(int length) {
-            this.bodyLength = length;
+        public Builder withHeader(String headerName, String headerValue) {
+            headers.put(headerName, headerValue);
             return this;
         }
 
@@ -43,13 +38,12 @@ public class Response {
 
     private Response(Builder builder) {
         this.statusCode = builder.statusCode;
-        this.contentType = builder.contentType;
         this.body = builder.body;
-        this.bodyLength = builder.bodyLength;
+        this.headers = builder.headers;
     }
 
     private static Map<Integer, String> buildResponseCodes() {
-        var responses = Map.of(200, "OK", 404, "Not Found");
+        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found");
         return responses;
     }
 
@@ -60,10 +54,17 @@ public class Response {
 
     public String toResponseString() {
         String initialLine = createInitialResponseLine(statusCode);
-        String contentLengthHeader = "Content-Length: " + bodyLength;
-        String responseString = initialLine + CRLF + contentType + CRLF + contentLengthHeader + CRLF + CRLF + body
-                + "\n";
-
+        String allHeaders = convertHeaderMapToString(headers);
+        String responseString = initialLine + CRLF + allHeaders + CRLF + CRLF + body + "\n";
+      
         return responseString;
+    }
+
+    private String convertHeaderMapToString(HashMap<String, String> headers) {
+        String mapAsString = headers.keySet()
+                                    .stream()
+                                    .map(key -> key + ": " + headers.get(key) + CRLF)
+                                    .collect(Collectors.joining(""));
+        return mapAsString;
     }
 }
