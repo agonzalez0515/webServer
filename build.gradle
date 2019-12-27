@@ -24,6 +24,9 @@ dependencies {
 
     // Use Mockito
     testImplementation 'org.mockito:mockito-core:2.+'
+
+    compile group: 'com.github.spullara.mustache.java', name: 'compiler', version: '0.9.6'
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
 }
 
 application {
