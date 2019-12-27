@@ -6,6 +6,11 @@ import java.io.PrintWriter;
 
 import java.net.Socket;
 
+import webserver.request.Parser;
+import webserver.request.Request;
+import webserver.routes.AppRoutes;
+import webserver.routes.TodoRoutes;
+
 class SocketHandler implements Runnable {
     private BufferedReader in;
     private PrintWriter out;
@@ -21,18 +26,17 @@ class SocketHandler implements Runnable {
     }
 
     public void run() {
-        Request request = new Request(in);
-        Controller controller = new Controller();
-        Routes routes = new Routes(controller, directory);
-        Router router = new Router(routes);
+        Parser parser= new Parser();
+        Router router = new Router();
+        TodoRoutes todoRoutes = new TodoRoutes();
+        AppRoutes appRoutes = new AppRoutes();
+        
+        todoRoutes.addRoutes(router);
+        appRoutes.addRoutes(router);
 
         try {
-            request.parse();
-            
-            String path = request.getRequestPath();
-            String method = request.getRequestMethod();
-            String response = router.route(path, method);
-            
+            Request request = parser.parse(in);
+            String response = router.route(request);
             out.println(response);
 
         } catch (IOException e) {
