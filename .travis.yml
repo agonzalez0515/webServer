@@ -4,3 +4,11 @@ deploy:
   api_key:
     secure: FmqvRtBYKiobzoOPGvLMQSGkL2LX1+xJnvHyvDdM2b77KMDP2Q10bm+XabxXUVnxXA6Zaz6sam+FklaoVVA8NwUJ4Sv0gB5XTs43bHlyYoCfVzcLhpbsASvIzS+74AqaQsNCWatnjtlItnqoB3MHKtCaYIK+lHET++0B9RvBRTJwp3G6OcO4oXpgceM0f06SXZztbSEpGnafIDe1ExU7TxTw0y/o+vWA7u8mxqOx++B7xXo1NQ/xReP4aUJkMB7VhtCGATC4SjHRvhVeDay0E6x+x0e5rvuzTbyk3u/KmyCkNrygvIWUxhKSrx3xljNUM0udWcO1yBAr6QAsSj00zaLKsLXS4G1UG47iF2QNj3d24gmz9/RH6Qwr1/CpqxVIDgaBYHMggXEn6ge7phv2++st2heqn/loD3BWiVjFYXkxB3qBHacjDB9A4lnQSo3vjKACqiQRLt2I9yj+k30YzTt2nzXTRKHkwbd8AGGF9ptRpohtYd3UcKTHceGg4UCkImPCJEcz2Hfs8baDlbvKsWfYBAWX3haDw/6bIq6fx8zASnQYIzIM1ePOwMtUpT40vcd5L3eSDUAyq8AT1JOCr1aotwoOZmZweWF3boKVMUMkc20tZUwxp8PaJMQyXNDs7yDQX59eg6kHLfZHH7U0n9xam/6vZ+BNECioY7ev02w=
   app: secret-wave-52844
+
+install: ./install.sh
+
+before_script: 
+  - ./gradlew run &
+  - sleep 3 
+
+script: ./spinach.sh
