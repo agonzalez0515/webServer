@@ -9,6 +9,8 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
+import webserver.models.Todo;
+
 public class MustacheUtil {
     private static final MustacheFactory mf = new DefaultMustacheFactory();
     

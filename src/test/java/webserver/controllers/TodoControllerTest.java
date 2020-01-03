@@ -1,13 +1,14 @@
 package webserver.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.containsString;
 
@@ -43,4 +44,15 @@ public class TodoControllerTest {
         
         assertThat(htmlString, containsString("File Not Found"));
     } 
+
+    @Test
+    public void itRedirectsAfterPostIsComplete() throws IOException {
+        HashMap<String, String> body = new HashMap<String, String>();
+        body.put("done", "true");
+        when(request.getRequestBody()).thenReturn(body);
+        when(request.getRequestPath()).thenReturn("/todo/4/toggle");
+        String responseAfterPost = TodoController.updateTodoDetail.apply(request);
+
+        assertThat(responseAfterPost, containsString("303"));
+    }
 }

@@ -43,7 +43,7 @@ public class Response {
     }
 
     private static Map<Integer, String> buildResponseCodes() {
-        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found");
+        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found", 303, "See Other");
         return responses;
     }
 

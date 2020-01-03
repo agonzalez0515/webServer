@@ -12,7 +12,7 @@ public class App {
 
     public static void main(String[] args) {
         int portNum = setup.createPortNumber(system.getPortCliArg());
-        String directory = system.getDirectoryCliArg();
+        String directory = setup.createDirectory(system.getDirectoryCliArg());
 
         try {
             ServerSocket server = socketCreator.createServerSocket(portNum);

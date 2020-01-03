@@ -25,6 +25,11 @@ public class AppController {
         String path = request.getPath();
         String body = ResponseBody.getHtml(path);
         return getCssResponseBuilder(200, body);
+    }
+
+    public static Callback<Request, String> getDirectoryFile = (request) -> {
+        String body = ResponseBody.getHtml(request.getPath());
+        return getResponseBuilder(200, body);
     };
 
     private static String getResponseBuilder(int statusCode, String body) {

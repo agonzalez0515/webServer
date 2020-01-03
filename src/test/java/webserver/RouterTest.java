@@ -19,7 +19,7 @@ public class RouterTest {
 
     @Before
     public void init() {
-        router = new Router();
+        router = new Router("public");
     }
 
     @Mock
