@@ -1,8 +1,6 @@
 package webserver;
 
-public class SystemUtils {
-    private static final String NO_DIRECTORY_SPECIFIED = "";
-    
+public class SystemUtils {    
     public String getPortEnv() {
         return System.getenv("PORT");
     }
@@ -12,7 +10,6 @@ public class SystemUtils {
     }
 
     public String getDirectoryCliArg() {
-        String directory = System.getProperty("directory");
-        return directory == null ? NO_DIRECTORY_SPECIFIED : directory;
+        return System.getProperty("directory");
     }
 }

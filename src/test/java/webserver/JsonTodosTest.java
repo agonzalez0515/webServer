@@ -40,14 +40,11 @@ public class JsonTodosTest {
     @Test
     public void testItUpdatesAnExistingTodoItem() {
         JsonTodos todos = new JsonTodos("/src/test/resources/testJson.json");
-        JSONObject newTodo = new JSONObject();
-        newTodo.put("id", 4);
-        newTodo.put("title", "Buffy The Vampire Slayer");
-        todos.updateTodo(newTodo);
+        todos.updateTodo(1, true);
         JSONArray items = todos.getAllTodos();
-        JSONObject actual = (JSONObject) items.get(3);
+        JSONObject actual = (JSONObject) items.get(0);
 
-        assertTrue(actual.containsValue("Buffy The Vampire Slayer"));
+        assertTrue(actual.containsValue(true));
     }
 
     @Test

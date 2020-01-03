@@ -8,8 +8,7 @@ import java.net.Socket;
 
 import webserver.request.Parser;
 import webserver.request.Request;
-import webserver.routes.AppRoutes;
-import webserver.routes.TodoRoutes;
+import webserver.routes.Routes;
 
 class SocketHandler implements Runnable {
     private BufferedReader in;
@@ -27,18 +26,14 @@ class SocketHandler implements Runnable {
 
     public void run() {
         Parser parser= new Parser();
-        Router router = new Router();
-        TodoRoutes todoRoutes = new TodoRoutes();
-        AppRoutes appRoutes = new AppRoutes();
-        
-        todoRoutes.addRoutes(router);
-        appRoutes.addRoutes(router);
+        Router router = new Router(directory);
+        Routes routes = new Routes(router);
+        routes.setupRoutes();
 
         try {
             Request request = parser.parse(in);
             String response = router.route(request);
             out.println(response);
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally  {

@@ -1,1 +1,38 @@
-[{"id":1,"text":"Go to target for milk","title":"Target"},{"id":2,"text":"Walk captain for one hour","title":"Walk the dog"},{"id":3,"text":"Go to car wash before work on Friday.","title":"Wash car"},{"id":4,"text":"Do laundry before weekend.","title":"Do laundry"},{"id":5,"text":"new+todo+with+more+details","title":"new+todo"},{"id":6,"text":"byeeee","title":"heyyy"},{"id":7,"text":"do+all+the+things","title":"here+is+a+new+thing"},{"id":8,"text":"lots+of+spaces","title":"a+todo+with+spaces"},{"id":9,"text":"ok bye","title":"a new todo with spac"}]
+[
+  {
+    "id": 1,
+    "text": "Go to target for milk",
+    "title": "Target",
+    "done": false
+  },
+  {
+    "id": 2,
+    "text": "Walk captain for one hour",
+    "title": "Walk the dog",
+    "done": true
+  },
+  {
+    "id": 3,
+    "text": "Go to car wash before work on Friday.",
+    "title": "Wash car",
+    "done": false
+  },
+  {
+    "id": 4,
+    "text": "Do laundry before weekend.",
+    "title": "Do laundry",
+    "done": false
+  },
+  {
+    "id": 5,
+    "text": "",
+    "title": "hey",
+    "done": false
+  },
+  {
+    "id": 6,
+    "text": "helllooo byeee",
+    "title": "new todo",
+    "done": false
+  }
+]

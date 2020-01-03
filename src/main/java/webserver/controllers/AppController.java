@@ -21,6 +21,11 @@ public class AppController {
         return getResponseBuilder(404, body);
     };
 
+    public static Callback<Request, String> getDirectoryFile = (request) -> {
+        String body = ResponseBody.getHtml(request.getRequestPath());
+        return getResponseBuilder(200, body);
+    };
+
     private static String getResponseBuilder(int statusCode, String body) {
         return new Response.Builder(statusCode)
                     .withHeader("Content-Type", "text/html; charset=utf-8")
