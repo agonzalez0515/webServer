@@ -10,10 +10,14 @@ import webserver.controllers.AppController;
 import webserver.request.Request;
 import webserver.request.HTTP;;
 
-
 public class Router {
     private HashMap<String, Callback<Request, String>> GETRoutes = new HashMap<>();
     private HashMap<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
+    private String directory;
+
+    public Router(String directory) {
+        this.directory = directory;
+    }
 
     public void get(String route, Callback<Request, String> controller) {
         GETRoutes.put(route, controller);
@@ -36,13 +40,15 @@ public class Router {
         assert routes != null;
         Optional<Callback<Request, String>> controller = routes.entrySet()
                                                   .stream()
-                                                  .filter( entry -> routeMatcher(requestPath, entry.getKey()))
+                                                  .filter(entry -> routeMatcher(requestPath, entry.getKey()))
                                                   .map(Map.Entry::getValue)
                                                   .findFirst();
         if (controller.isPresent()) {
             return controller.get();
-        } else {
-            return AppController.getNotFound;
+        } else if (!controller.isPresent() && !directory.equals("")) {
+            return AppController.getDirectoryFile;
+         } else {
+              return AppController.getNotFound;
         }
     }
 

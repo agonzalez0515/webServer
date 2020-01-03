@@ -11,8 +11,17 @@
         </header>
         <main class="todo-listing-main">
             <section class="listing-detail">
-            <p>{{text}}</p>
+                <p>{{text}}</p>
+                <form action="/todo/{{id}}/toggle" method="post">
+                    <label for="toggle">Mark as done:</label>
+                    {{^done}}<input type="checkbox" id="toggle" name="done">{{/done}}
+                    {{#done}}<input type="checkbox" id="toggle" checked name="done">{{/done}}
+                    <button type="submit"> Done </button>
+                </form>
             </section>
+            {{#done}}
+            <p class="complete"> DONE </p>
+            {{/done}}
             <section>
                 <a href="/todo" rel="collection">Back to Listings</a>
             </section>

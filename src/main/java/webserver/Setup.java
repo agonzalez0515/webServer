@@ -1,6 +1,7 @@
 package webserver;
 
 public class Setup {
+    private static final String DEFAULT_DIRECTORY = "public";
     private final int DEFAULT_PORT = 5000;
     private final String ENV_PORT;
 
@@ -9,19 +10,18 @@ public class Setup {
     }
 
     public int createPortNumber(final String cliArg) {
-        if (environmentPortProvided()) {
-            return Integer.parseInt(ENV_PORT);
-        } else {
-            return cliPort(cliArg);
-        }
+        return environmentPortProvided() ? Integer.parseInt(ENV_PORT) : cliPort(cliArg);
     }
 
-    private int cliPort(String cliArg) {
+    public String createDirectory(final String cliArg) {
+        return cliArg.equals("") ? DEFAULT_DIRECTORY : cliArg;
+    }
+
+    private int cliPort(final String cliArg) {
         return cliArg.equals("") ? DEFAULT_PORT : Integer.parseInt(cliArg);
     }
 
     private boolean environmentPortProvided() {
         return ENV_PORT != null ? true : false;
     }
-
 }

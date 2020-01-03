@@ -16,7 +16,8 @@ import webserver.JsonTodos;
 import webserver.request.Request;
 import webserver.Response;
 import webserver.ResponseBody;
-import webserver.Todo;
+
+import webserver.models.Todo;
 
 public class TodoController {
     private static final String EMPTY_SPACE = " ";
@@ -32,9 +33,9 @@ public class TodoController {
 
     @SuppressWarnings("unchecked")
     public static Callback<Request, String> getTodoList = (request) -> {
-        String requestMethod = request.getMethod().toLowerCase();
+        String requestMethod = request.getMethod();
 
-        if (requestMethod.equals("head")) {
+        if (requestMethod.equals("HEAD")) {
             return headResponseBuilder(200);
         }
 
@@ -46,11 +47,12 @@ public class TodoController {
         JSONArray todosData = jsonTodos.getAllTodos();
 
         for (JSONObject todoObj : (Iterable<JSONObject>) todosData) {
+            System.out.print(todoObj);
             String title = getProperty(todoObj, "title");
             String text = getProperty(todoObj, "text");
             int id = Integer.parseInt(getProperty(todoObj, "id"));
 
-            Todo td = new Todo(title, text, id);
+            Todo td = new Todo(title, text, id, false);
 
             todos.add(td);
         }
@@ -72,7 +74,6 @@ public class TodoController {
 
         Mustache template = MustacheUtil.getTemplate("todo-item.mustache");
         JSONObject todoItem = jsonTodos.getTodoById(id);
-
         if (todoItem == null) {
             html = getTodoNotFound.apply(request);
             responseCode = 404;
@@ -82,20 +83,15 @@ public class TodoController {
             String title = getProperty(todoItem, "title");
             String text = getProperty(todoItem, "text");
             int todoId = Integer.parseInt(getProperty(todoItem, "id"));
+            boolean done = Boolean.parseBoolean(getProperty(todoItem, "done"));
 
-            Todo td = new Todo(title, text, todoId);
+            Todo td = new Todo(title, text, todoId, done);
             html = MustacheUtil.executeTemplate(template, td);
             responseCode = 200;
         }
 
         return getResponseBuilder(responseCode, html);
     };
-
-    private static int getTodoIdFromPath(String path) {
-        String[] pathSections = path.split(PATH_SEPARATOR);
-        int id = Integer.parseInt(pathSections[2]);
-        return id;
-    }
 
     @SuppressWarnings("unchecked")
     public static Callback<Request, String> newTodo = (request) -> {
@@ -109,8 +105,26 @@ public class TodoController {
         newTodo.put("text", parsedBody.get("text"));
         jsonTodos.addTodo(newTodo); //need to handle if add is not successful
 
+        return postResponseBuilder(201, "/todo/"+ id);
+    };
+
+    public static Callback<Request, String> updateTodoDetail = (request) -> {
+        HashMap<String, String> body = request.getBody();
+        String doneField = body.get("done");
+        boolean isDone = doneField.equals("on") ? true : false;
+        String path = request.getPath();
+        int id = getTodoIdFromPath(path);
+        jsonTodos.updateTodo(id, isDone);
+
         return postResponseBuilder(303, "/todo/"+ id);
     };
+
+
+    private static int getTodoIdFromPath(String path) {
+        String[] pathSections = path.split(PATH_SEPARATOR);
+        int id = Integer.parseInt(pathSections[2]);
+        return id;
+    }
 
     private static String getProperty(JSONObject todoObj, String keyName) {
         return todoObj.get(keyName).toString();

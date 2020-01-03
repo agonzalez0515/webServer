@@ -16,5 +16,5 @@ public interface Callback<T, R> extends Function<T, R> {
         return null;
     }
 
-R applyThrows(T t) throws IOException;
+    R applyThrows(T t) throws IOException;
 }
