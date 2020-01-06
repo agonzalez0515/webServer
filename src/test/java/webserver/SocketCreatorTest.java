@@ -24,7 +24,7 @@ public class SocketCreatorTest {
     @Test
     public void testServerSocketGetsCreated() throws IOException {
         SocketCreator socketCreator = new SocketCreator();
-        ServerSocket server = socketCreator.createServerSocket();
+        ServerSocket server = socketCreator.createServerSocket(5000);
 
         assertNotNull(server);
         server.close();
@@ -33,7 +33,7 @@ public class SocketCreatorTest {
     @Test
     public void testServerSocketWithSpecificPortGetsCreated() throws IOException {
         SocketCreator socketCreator = new SocketCreator();
-        ServerSocket testServerSocket = socketCreator.createServerSocket();
+        ServerSocket testServerSocket = socketCreator.createServerSocket(5000);
 
         assertEquals(testServerSocket.getLocalPort(), 5000);
         testServerSocket.close();

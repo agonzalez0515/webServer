@@ -32,7 +32,7 @@ public class SocketHandlerTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(clientSocket.getInputStream()).thenReturn(new ByteArrayInputStream(inputString.getBytes()));
         when(clientSocket.getOutputStream()).thenReturn(out);
-        SocketHandler socketHandler = new SocketHandler(clientSocket);
+        SocketHandler socketHandler = new SocketHandler(clientSocket, "");
 
         socketHandler.run();
 
@@ -47,7 +47,7 @@ public class SocketHandlerTest {
       ByteArrayInputStream in = spy(new ByteArrayInputStream(inputString.getBytes()));
       when(spyClientSocket.getInputStream()).thenReturn(in);
       when(spyClientSocket.getOutputStream()).thenReturn(out);
-      SocketHandler socketHandler = new SocketHandler(spyClientSocket);
+      SocketHandler socketHandler = new SocketHandler(spyClientSocket, "");
 
       socketHandler.run();
 

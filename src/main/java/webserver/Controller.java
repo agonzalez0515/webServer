@@ -28,6 +28,13 @@ public class Controller {
         return getResponseBuilder(200, body);
     }
 
+    public String getDirectoryFile(String path) throws IOException {
+        int responseCode = 200;
+        String body = ResponseBody.getHtml(path);
+
+        return getResponseBuilder(responseCode, body);
+    }
+
     public String headIndex() throws IOException {
         String body = ResponseBody.getHtml("/index.html");
         return headResponseBuilder(200, body);
@@ -53,6 +60,7 @@ public class Controller {
         return headResponseBuilder(200, body);
     }
 
+
     private String getResponseBuilder(int statusCode, String body) {
         return new Response.Builder(statusCode)
                 .withContentType("Content-Type: text/html; charset=utf-8")
@@ -68,4 +76,3 @@ public class Controller {
                 .build();
     }
 }
-
