@@ -23,14 +23,12 @@ public class ResponseBody {
   }
 
   private static Path createFilePath(String path) {
-    Path filePath = FileSystems.getDefault().getPath(path.substring(1));
-    return filePath;
+      return FileSystems.getDefault().getPath(path.substring(1));
   }
 
   private static FileInputStream getFile(Path path) {
       try {
-          FileInputStream file = new FileInputStream(path.toString());
-          return file;
+          return new FileInputStream(path.toString());
       } catch (FileNotFoundException e) {
           Path errorFile = createFilePath("/404.html");
           return getFile(errorFile);
@@ -38,7 +36,7 @@ public class ResponseBody {
   }
 
   private static String createHTMLString(FileInputStream file) throws IOException {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
 
       int c;
       while ((c = file.read()) != -1) {

@@ -8,5 +8,7 @@ public class AppRoutes {
     router.get("/", AppController.getIndex);
     router.get("/health-check", AppController.getHealthCheck);
     router.get("/.+\\.css$", AppController.getResources);
+
+    router.head("/health-check", AppController.headHealthCheck);
   }
 }

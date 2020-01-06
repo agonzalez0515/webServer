@@ -13,62 +13,54 @@ import org.json.simple.JSONObject;
 import webserver.Callback;
 import webserver.MustacheUtil;
 import webserver.JsonTodos;
+import webserver.request.HTTP;
+import webserver.request.Parser;
 import webserver.request.Request;
 import webserver.Response;
 import webserver.ResponseBody;
 
 import webserver.models.Todo;
 
+@SuppressWarnings("unchecked")
 public class TodoController {
-    private static final String EMPTY_SPACE = " ";
-    private static final String FIELD_NAME_VALUE_SEPARATOR = "=";
-    private static final String FIELDS_SEPARATOR = "&";
+    private static final int ID_PARAM = 2;
     private static final String PATH_SEPARATOR = "/";
-    private static final String SPACE_CHAR = "\\+";
-    private static JsonTodos jsonTodos = new JsonTodos("/public/todos.json");
+    private JsonTodos jsonTodos;
 
-    public static Callback<Request, String> getTodoNotFound = (request) -> {
+    public TodoController(JsonTodos jsonTodos) {
+        this.jsonTodos = jsonTodos;
+    }
+
+    public Callback<Request, String> getTodoNotFound = (request) -> {
         return ResponseBody.getHtml("/404.html");
     };
 
-    @SuppressWarnings("unchecked")
-    public static Callback<Request, String> getTodoList = (request) -> {
-        String requestMethod = request.getMethod();
+    public Callback<Request, String> headTodoList= (request) -> {
+        return headResponseBuilder(200);
+    };
 
-        if (requestMethod.equals("HEAD")) {
-            return headResponseBuilder(200);
-        }
-
-        List<Todo> todos = new ArrayList<>();
+    public Callback<Request, String> getTodoList = (request) -> {
+        List<Todo> allTodos = new ArrayList<>();
         Map<String, Object> context = new HashMap<>();
-
         Mustache todosTemplate = MustacheUtil.getTemplate("todos.mustache");
-
         JSONArray todosData = jsonTodos.getAllTodos();
 
         for (JSONObject todoObj : (Iterable<JSONObject>) todosData) {
-            System.out.print(todoObj);
-            String title = getProperty(todoObj, "title");
-            String text = getProperty(todoObj, "text");
-            int id = Integer.parseInt(getProperty(todoObj, "id"));
-
-            Todo td = new Todo(title, text, id, false);
-
-            todos.add(td);
+            allTodos.add(Todo.fromJson(todoObj));
         }
 
-        context.put("todos", todos);
+        context.put("todos", allTodos);
         return getResponseBuilder(200, MustacheUtil.executeTemplate(todosTemplate, context));
 
     };
 
-    public static Callback<Request, String> getTodoDetail = (request) -> {
+    public Callback<Request, String> getTodoDetail = (request) -> {
         String html = "";
         int responseCode = 0;
         String path = request.getPath();
         String requestMethod = request.getMethod();
 
-        if (requestMethod.equals("HEAD")) { return headResponseBuilder(200);}
+        if (requestMethod.equals(HTTP.HEAD)) { return headResponseBuilder(200);}
 
         int id = getTodoIdFromPath(path);
 
@@ -79,96 +71,70 @@ public class TodoController {
             responseCode = 404;
 
         } else {
-            
-            String title = getProperty(todoItem, "title");
-            String text = getProperty(todoItem, "text");
-            int todoId = Integer.parseInt(getProperty(todoItem, "id"));
-            boolean done = Boolean.parseBoolean(getProperty(todoItem, "done"));
-
-            Todo td = new Todo(title, text, todoId, done);
-            html = MustacheUtil.executeTemplate(template, td);
+            Todo todo = Todo.fromJson(todoItem);
+            html = MustacheUtil.executeTemplate(template, todo);
             responseCode = 200;
         }
 
         return getResponseBuilder(responseCode, html);
     };
 
-    @SuppressWarnings("unchecked")
-    public static Callback<Request, String> newTodo = (request) -> {
-        String body = request.getBody();
-        HashMap<String, String> parsedBody = parseRequestBody(body);
-        JSONObject newTodo = new JSONObject();
-        int id = jsonTodos.getAllTodos().size() + 1;
+    public Callback<Request, String> newTodo = (request) -> {
+        String contentType = request.getHeaders().get(HTTP.CONTENT_TYPE);
+        if(contentType.equals("text/xml; charset=utf-8")) {
+            return postResponseBuilder(415, "/todo");
+        }
 
-        newTodo.put("id", id);
-        newTodo.put("title", parsedBody.get("title"));
-        newTodo.put("text", parsedBody.get("text"));
+        HashMap<String, String> parsedBody = Parser.parseRequestBody(request.getBody());
+        int id = jsonTodos.getAllTodos().size() + 1;
+        
+        JSONObject newTodo = Todo.toJson(
+                                    parsedBody.get("title"), 
+                                    parsedBody.get("text"), 
+                                    id, 
+                                    false);
+ 
         jsonTodos.addTodo(newTodo); //need to handle if add is not successful
 
         return postResponseBuilder(201, "/todo/"+ id);
     };
 
-    public static Callback<Request, String> updateTodoDetail = (request) -> {
-        HashMap<String, String> body = request.getBody();
-        String doneField = body.get("done");
-        boolean isDone = doneField.equals("on") ? true : false;
+
+    public Callback<Request, String> updateTodoDetail = (request) -> {
         String path = request.getPath();
         int id = getTodoIdFromPath(path);
-        jsonTodos.updateTodo(id, isDone);
+        JSONObject todoItem = jsonTodos.getTodoById(id);
+        boolean isDone = Boolean.parseBoolean(todoItem.get("done").toString());
+        jsonTodos.updateTodo(id, !isDone);
 
-        return postResponseBuilder(303, "/todo/"+ id);
+        return postResponseBuilder(303, "/todo/" + id);
     };
-
-
-    private static int getTodoIdFromPath(String path) {
+ 
+    private int getTodoIdFromPath(String path) {
         String[] pathSections = path.split(PATH_SEPARATOR);
-        int id = Integer.parseInt(pathSections[2]);
+        int id = Integer.parseInt(pathSections[ID_PARAM]);
         return id;
     }
 
-    private static String getProperty(JSONObject todoObj, String keyName) {
-        return todoObj.get(keyName).toString();
-    }
-
-    private static HashMap<String, String> parseRequestBody(final String body) {
-        final HashMap<String, String> submittedFields = new HashMap<String, String>();
-        final String[] parsedBody = body.split(FIELDS_SEPARATOR);
-
-        for (final String fieldText : parsedBody) {
-            final int separatorIndex = fieldText.indexOf(FIELD_NAME_VALUE_SEPARATOR);
-            final String fieldName = parsedNameField(fieldText, separatorIndex);
-            final String fieldValue = parsedValueField(fieldText, separatorIndex);
-            submittedFields.put(fieldName, fieldValue);
-        }
-
-        return submittedFields;
-    }
-
-    private static String parsedNameField(final String fieldText, final int separatorIndex) {
-        return fieldText.substring(0, separatorIndex).replaceAll(SPACE_CHAR, EMPTY_SPACE);
-    }
-
-    private static String parsedValueField(final String fieldText, final int separatorIndex) {
-        return fieldText.substring(separatorIndex + 1).replaceAll(SPACE_CHAR, EMPTY_SPACE);
-    }
-
-    private static String getResponseBuilder(int statusCode, String body) {
+    private String getResponseBuilder(int statusCode, String body) {
         return new Response.Builder(statusCode)
-        .withHeader("Content-Type", "text/html; charset=utf-8")
-        .withHeader("Content-Length", Integer.toString(body.length()))
-        .withBody(body)
-        .build();
+            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP.CONTENT_LENGTH, Integer.toString(body.length()))
+            .withBody(body)
+            .build();
     }
 
-    private static String postResponseBuilder(int statusCode, String redirectPath) {
+    private String postResponseBuilder(int statusCode, String redirectPath) {
         return new Response.Builder(statusCode)
-        .withHeader("Content-Type", "text/html; charset=utf-8")
-        .withHeader("Content-Length", "0")
-        .withHeader("Location", redirectPath)
-        .build();
+            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP.CONTENT_LENGTH, "0")
+            .withHeader(HTTP.LOCATION, redirectPath)
+            .build();
     }
 
-    private static String headResponseBuilder(int statusCode) {
-        return new Response.Builder(statusCode).withHeader("Content-Type", "text/html; charset=utf-8").build();
+    private String headResponseBuilder(int statusCode) {
+        return new Response.Builder(statusCode)
+            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
+            .build();
     }
 }

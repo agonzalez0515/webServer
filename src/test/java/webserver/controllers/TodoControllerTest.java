@@ -1,10 +1,14 @@
 package webserver.controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -13,46 +17,62 @@ import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.containsString;
 
 import webserver.request.Request;
+import webserver.JsonTodos;
+
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("unchecked")
 public class TodoControllerTest {
+    TodoController controller;
+
     @Mock
     Request request;
 
-    @Test
-    public void testItReturnsAllTodoItems() throws IOException {
-        when(request.getMethod()).thenReturn("GET");
-        String htmlString = TodoController.getTodoList.apply(request);
+    @Mock
+    JsonTodos jsonTodos;
 
-        assertThat(htmlString, containsString("Walk the dog"));
+    @Before
+    public void init() {
+        controller = new TodoController(jsonTodos);
     }
 
     @Test
-    public void testItReturnsOneTodoItemWithDetails() throws IOException {
+    public void itReturnsAllTodoItems() throws IOException {
+        JSONObject todos = new JSONObject();
+        todos.put("title","hello");
+        todos.put("text","bye");
+        todos.put("id", 1);
+        todos.put("done", false);
+        JSONArray todosArray = new JSONArray();
+        todosArray.add(todos);
+        
+        when(jsonTodos.getAllTodos()).thenReturn(todosArray);
+        String htmlString = controller.getTodoList.apply(request);
+
+        assertThat(htmlString, containsString("hello"));
+    }
+
+    @Test
+    public void itReturnsOneTodoItemWithDetails() throws IOException {
+        JSONObject todo = new JSONObject();
+        todo.put("title","hello");
+        todo.put("text","bye");
+        todo.put("id", 1);
+        todo.put("done", false);
         when(request.getPath()).thenReturn("/todo/1");
         when(request.getMethod()).thenReturn("GET");
-        String htmlString = TodoController.getTodoDetail.apply(request);
+        when(jsonTodos.getTodoById(1)).thenReturn(todo);
+        String htmlString = controller.getTodoDetail.apply(request);
 
-        assertThat(htmlString, containsString("Go to target for milk"));
+        assertThat(htmlString, containsString("bye"));
     }
 
     @Test
-    public void testItReturnsNotFoundPageWhenItemIdDoesNotExist() throws IOException {
+    public void itReturnsNotFoundPageWhenItemIdDoesNotExist() throws IOException {
         when(request.getPath()).thenReturn("/todo/15");
         when(request.getMethod()).thenReturn("GET");
-        String htmlString = TodoController.getTodoDetail.apply(request);
+        String htmlString = controller.getTodoDetail.apply(request);
         
         assertThat(htmlString, containsString("File Not Found"));
     } 
-
-    @Test
-    public void itRedirectsAfterPostIsComplete() throws IOException {
-        HashMap<String, String> body = new HashMap<String, String>();
-        body.put("done", "true");
-        when(request.getRequestBody()).thenReturn(body);
-        when(request.getRequestPath()).thenReturn("/todo/4/toggle");
-        String responseAfterPost = TodoController.updateTodoDetail.apply(request);
-
-        assertThat(responseAfterPost, containsString("303"));
-    }
 }

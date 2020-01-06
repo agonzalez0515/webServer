@@ -55,7 +55,7 @@ public class Response {
     public String toResponseString() {
         String initialLine = createInitialResponseLine(statusCode);
         String allHeaders = convertHeaderMapToString(headers);
-        String responseString = initialLine + CRLF + allHeaders + CRLF + CRLF + body + "\n";
+        String responseString = initialLine + CRLF + allHeaders + CRLF + CRLF + body + CRLF + "\n";
       
         return responseString;
     }
