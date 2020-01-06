@@ -2,11 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>TODOS</title>
+        <title>TODO</title>
+         <link rel="stylesheet" type="text/css" href="/src/main/resources/index.css">
     </head>
     <body>
-        <main>
+        <header>
             <h1 class="title">{{title}}</h1>
+        </header>
+        <main class="todo-listing-main">
             <section class="listing-detail">
             <p>{{text}}</p>
             </section>
@@ -14,5 +17,8 @@
                 <a href="/todo" rel="collection">Back to Listings</a>
             </section>
         </main>
+        <footer>
+            &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
+        </footer>
     </body>
 </html>

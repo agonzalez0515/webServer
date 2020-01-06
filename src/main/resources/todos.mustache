@@ -3,60 +3,37 @@
     <head>
       <meta charset="UTF-8">
       <title>TODOS</title>
+      <link rel="stylesheet" type="text/css" href="/src/main/resources/index.css">
     </head>
     <body>
-      <main class="container">
+      <main class="todos-container">
           <h1 class="title">My ToDos</h1>
-          <section class="todo-list">
-              <ul>
-                  {{#todos}}
-                  <li><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
-                  {{/todos}}
-              </ul>
+          <section class="todo-list-container">
+            <ul class="todo-list">
+                {{#todos}}
+                <li class="todo-list-item"><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
+                {{/todos}}
+            </ul>
           </section>
           <section>
-              <form action="/todo" method="post"> 
-                  <label for="new-todo">Title:</label>
-                  <input type="text" id="new-todo" name="title">
-                   <label for="text">Details:</label>
-                  <input type="text" id="text" name="text">
-                  <button type="submit">Submit</button>
-              </form>
+            <h2 class="todo-form-label">Add a new todo</h2>
+            <p class="todo-form-instructions"> To add a new todo, submit a title and details in the form below.</p>
+            <form action="/todo" method="post" class="todo-form"> 
+                <p>
+                    <label for="new-todo">Title:</label>
+                    <input type="text" id="new-todo" name="title">
+                </p>
+                <p>
+                    <label for="text">Details:</label>
+                    <textarea type="textarea" id="text" name="text" rows="5" cols="33"></textarea>
+                </p>
+                <br>
+                <button type="submit" class="save-button">Save</button>
+            </form>
           </section>
       </main>
+       <footer>
+            &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
+        </footer>
     </body>
 </html>
-
-<style>
-    body {
-        font-family: Courier New;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .title {
-        align-self: center;
-        color: rebeccapurple;
-        font-size: 2.5rem;
-    }
-
-    .todo-list {
-        margin: 2rem 30rem;
-    }
-
-    li {
-        padding: 1rem;
-        font-size: 1.5rem;
-        background: lavender;
-        border: 2px solid black;
-        border-bottom: none;
-    }
-
-    li:last-child {
-        border-bottom: 2px solid black;
-    }
-
-</style>
