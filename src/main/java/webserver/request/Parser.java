@@ -16,6 +16,9 @@ public class Parser {
     private static final int REQUEST_PATH = 1;
     private static final int THREE_SECTIONS = 3;
     private static final String WHITE_SPACE = "\\s+";
+    private static final String FIELD_NAME_VALUE_SEPARATOR = "=";
+    private static final String FIELDS_SEPARATOR = "&";
+    private static final String SPACE_CHAR = "\\+";
 
     private final HashMap<String, String> headers = new HashMap<>();
     private String method;
@@ -36,6 +39,20 @@ public class Parser {
                 .withHeaders(headers)
                 .withBody(body)
                 .build();
+    }
+
+    public static HashMap<String, String> parseRequestBody(String body) {
+        HashMap<String, String> submittedFields = new HashMap<String, String>();
+        String[] parsedBody = body.split(FIELDS_SEPARATOR);
+
+        for (String fieldText : parsedBody) {
+            int separatorIndex = fieldText.indexOf(FIELD_NAME_VALUE_SEPARATOR);
+            String nameField = parsedNameField(fieldText, separatorIndex);
+            String valueField = parsedValueField(fieldText, separatorIndex);
+            submittedFields.put(nameField, valueField);
+        }
+
+       return submittedFields;
     }
 
     private void setRequestMethod(String[] initialRequestLine) {
@@ -72,5 +89,21 @@ public class Parser {
 
     private int getContentLength(String contentLengthHeader) {
         return Integer.parseInt(contentLengthHeader.replaceAll(WHITE_SPACE, NO_SPACE));
+    }
+
+    private static String parsedNameField(String fieldText, int separatorIndex) {
+        if (fieldText.equals("")){
+            return "No Title Provided";
+        } else {
+            return fieldText.substring(0, separatorIndex).replaceAll(SPACE_CHAR, EMPTY_SPACE);
+        }
+    }
+
+    private static String parsedValueField(String fieldText, int separatorIndex) {
+        if (fieldText.equals("")) {
+            return "No Details Provided";
+        } else {
+            return fieldText.substring(separatorIndex + 1).replaceAll(SPACE_CHAR, EMPTY_SPACE);
+        }
     }
 }

@@ -5,7 +5,7 @@ class Spinach::Features::CreateATodoItem < Spinach::FeatureSteps
   include Shared::Standard
 
   step "I make a valid POST request to the listing page" do
-    @response = Requests.post("/todo", "task=a%20new%20task", {
+    @response = Requests.post("/todo", "title=a%20new%20task&text=bye", {
       "Content-Type": "application/x-www-form-urlencoded"
     })
   end

@@ -11,11 +11,12 @@
                 <p>{{text}}</p>
                 <form action="/todo/{{id}}/toggle" method="post">
                     <label for="toggle">Mark as done:</label>
-                    {{^done}}<input type="checkbox" id="toggle" name="done">{{/done}}
-                    {{#done}}<input type="checkbox" id="toggle" checked name="done">{{/done}}
-                    <button type="submit"> Done </button>
+                    <button id="toggle" type="submit"> Done </button>
                 </form>
             </section>
+            {{^done}}
+            <p class="incomplete"> Not Done</p>
+            {{/done}}
             {{#done}}
             <p class="complete"> DONE </p>
             {{/done}}
@@ -25,3 +26,13 @@
         </main>
     </body>
 </html>
+
+<style>
+.complete {
+    color: green;
+}
+
+.incomplete {
+    color: red;
+}
+</style>

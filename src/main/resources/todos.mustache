@@ -15,48 +15,41 @@
               </ul>
           </section>
           <section>
-              <form action="/todo" method="post"> 
+              <form action="/todo" method="post" id="todo-form"> 
                   <label for="new-todo">Title:</label>
                   <input type="text" id="new-todo" name="title">
                    <label for="text">Details:</label>
                   <input type="text" id="text" name="text">
-                  <button type="submit">Submit</button>
+                  <button id="save" type="submit">Submit</button>
               </form>
           </section>
       </main>
     </body>
+    <script>
+        document
+        .getElementById("todo-form")
+        .addEventListener("submit", (event) => {
+        event.preventDefault();
+       
+        var formData = "";
+        var formEl = event.target;
+        for (var i = 0; i < formEl.length; ++i) {
+            formData = formData + (formEl[i].name + "=" + formEl[i].value + "&");
+        }
+     
+        var url = '/todo';
+        var fetchOptions = {
+            method: 'POST',
+            body: formData
+        };
+        
+           var responsePromise = fetch(url, fetchOptions)
+      .then((res) => {
+        const host = window.location.host;
+        const location = res.headers.get("location");
+        window.location.replace("http://" + host + location);
+      })
+    });
+    </script>
 </html>
 
-<style>
-    body {
-        font-family: Courier New;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .title {
-        align-self: center;
-        color: rebeccapurple;
-        font-size: 2.5rem;
-    }
-
-    .todo-list {
-        margin: 2rem 30rem;
-    }
-
-    li {
-        padding: 1rem;
-        font-size: 1.5rem;
-        background: lavender;
-        border: 2px solid black;
-        border-bottom: none;
-    }
-
-    li:last-child {
-        border-bottom: 2px solid black;
-    }
-
-</style>

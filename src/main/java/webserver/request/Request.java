@@ -3,7 +3,7 @@ package webserver.request;
 import java.util.HashMap;
 
 public class Request {
-    private  HashMap<String, String> headers = new HashMap<String, String>();
+    private  HashMap<String, String> headers;
     private String method;
     private String path;
     private String body;
@@ -30,8 +30,7 @@ public class Request {
         }
 
         public Request build() {
-            Request request = new Request(this);
-            return request;
+            return new Request(this);
         }
     }
 

@@ -1,5 +1,7 @@
 package webserver.models;
 
+import org.json.simple.JSONObject;
+
 public class Todo {
     private String title;
     private String text;
@@ -43,5 +45,25 @@ public class Todo {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public static Todo fromJson(JSONObject todoObj) {
+        String title = todoObj.get("title").toString();
+        String text = todoObj.get("text").toString();
+        int id = Integer.parseInt(todoObj.get("id").toString());
+        boolean isDone = Boolean.parseBoolean(todoObj.get("done").toString());
+        
+        return new Todo(title, text, id, isDone);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static JSONObject toJson(String title, String text, int id, boolean isDone) {
+        JSONObject todoObj = new JSONObject();
+        todoObj.put("id", id);
+        todoObj.put("title", title);
+        todoObj.put("text", text);
+        todoObj.put("done", isDone);
+
+        return todoObj;
     }
 }
