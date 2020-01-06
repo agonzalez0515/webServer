@@ -9,11 +9,16 @@ This project uses:
 * Mockito
 * Deployed to Heroku
 
-### Run Server Locally on port 5000
+https://secret-wave-52844.herokuapp.com/
 
-```gradle run```
+### Run Server Locally
 
-### Run unit tests
+* On port 5000: `gradle run`
 
-```gradle test```
+* On custom port: `gradle run -Dport=yourPortNumber`
 
+
+### Tests
+
+* Run unit tests `gradle test`
+* Run integration tests from root `cd gisrc/integration-test/http_server_spec/ && bundle exec spinach`
