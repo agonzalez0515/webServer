@@ -61,7 +61,7 @@ a {
     justify-content: space-between;
 }
 
-.todo-form {
+#todo-form {
     align-items: center;
     display: flex;
     flex-direction: column;

@@ -12,6 +12,7 @@ import webserver.request.HTTP;;
 
 public class Router {
     private HashMap<String, Callback<Request, String>> GETRoutes = new HashMap<>();
+    private HashMap<String, Callback<Request, String>> HEADRoutes = new HashMap<>();
     private HashMap<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
     private String directory;
 
@@ -22,11 +23,15 @@ public class Router {
     public void get(String route, Callback<Request, String> controller) {
         GETRoutes.put(route, controller);
     }
+    
+    public void head(String route, Callback<Request, String> controller) {
+        HEADRoutes.put(route, controller);
+    }
 
     public void post(String route, Callback<Request, String> controller) {
         POSTRoutes.put(route, controller);
     }
-
+    
     public String route(Request request) {
         Callback<Request, String> controller = findController(request);
         return controller.apply(request);
@@ -45,9 +50,7 @@ public class Router {
                                                   .findFirst();
         if (controller.isPresent()) {
             return controller.get();
-        } else if (!controller.isPresent() && !directory.equals("")) {
-            return AppController.getDirectoryFile;
-         } else {
+        } else {
               return AppController.getNotFound;
         }
     }
@@ -55,8 +58,9 @@ public class Router {
     private HashMap<String, Callback<Request, String>> getMethodRoutes(String method) {
         switch(method) {
             case HTTP.GET:
-            case HTTP.HEAD:
                 return this.GETRoutes;
+            case HTTP.HEAD:
+                return this.HEADRoutes;
             case HTTP.POST:
                 return this.POSTRoutes;
         }
