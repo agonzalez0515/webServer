@@ -1,0 +1,82 @@
+body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: Courier New;
+    margin: 0;
+    min-height: 100vh;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    font-size: 2rem;
+}
+
+footer {
+    background-color: lightpink;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 1.5rem;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+.todos-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-list-container {
+    width: 40rem;
+}
+
+.title {
+    align-self: center;
+    color: rebeccapurple;
+    font-size: 2.5rem;
+}
+
+.todo-list {
+    list-style: circle;
+}
+
+.todo-list-item {
+    padding-top: 1rem;
+    font-size: 1.5rem;
+    border-bottom: 2px solid black;
+}
+
+.todo-listing-main {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    font-size: 2rem;
+    justify-content: space-between;
+}
+
+.todo-form {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    margin: 1rem;
+}
+
+.todo-form-label,
+.todo-form-instructions {
+    font-size: 1rem;
+}
+
+.save-button {
+    background-color: white;
+    color: black;
+    height: 2rem;
+    font-size: 1rem;
+}

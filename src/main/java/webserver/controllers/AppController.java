@@ -21,9 +21,23 @@ public class AppController {
         return getResponseBuilder(404, body);
     };
 
+    public static Callback<Request, String> getResources = (request) -> {
+        String path = request.getPath();
+        String body = ResponseBody.getHtml(path);
+        return getCssResponseBuilder(200, body);
+    };
+
     private static String getResponseBuilder(int statusCode, String body) {
         return new Response.Builder(statusCode)
                     .withHeader("Content-Type", "text/html; charset=utf-8")
+                    .withHeader("Content-Length", Integer.toString(body.length()))
+                    .withBody(body)
+                    .build();
+    }
+
+    private static String getCssResponseBuilder(int statusCode, String body) {
+        return new Response.Builder(statusCode)
+                    .withHeader("Content-Type", "text/css")
                     .withHeader("Content-Length", Integer.toString(body.length()))
                     .withBody(body)
                     .build();
