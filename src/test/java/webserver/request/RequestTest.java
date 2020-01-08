@@ -19,7 +19,7 @@ public class RequestTest {
     }
 
     @Test
-    public void testItReturnsRequestPath() throws IOException {
+    public void itReturnsRequestPath() throws IOException {
         Request request = new Request.Builder(null, "/hey").build();
 
         assertEquals("/hey", request.getPath());
@@ -44,9 +44,19 @@ public class RequestTest {
     }
 
     @Test
-    public void testItReturnsTheRequestBody()throws IOException {
+    public void itReturnsTheRequestBody()throws IOException {
         Request request = new Request.Builder("GET", "/hey").withBody("this is the body").build();
 
         assertEquals("this is the body", request.getBody());
+    }
+
+    @Test
+    public void itReturnsTheRequestQueryParams()throws IOException {
+        HashMap<String, String> query = new HashMap<>();
+        query.put("ok", "bye");
+        Request request = new Request.Builder("GET", "/hey?ok=bye").withQuery(query).build();
+        String value = request.getQuery().get("ok");
+
+        assertEquals("bye", value);
     }
 }

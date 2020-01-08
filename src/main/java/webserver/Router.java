@@ -8,17 +8,12 @@ import java.util.regex.Pattern;
 
 import webserver.controllers.AppController;
 import webserver.request.Request;
-import webserver.request.HTTP;;
+import webserver.request.HTTP_HEADERS;;
 
 public class Router {
-    private HashMap<String, Callback<Request, String>> GETRoutes = new HashMap<>();
-    private HashMap<String, Callback<Request, String>> HEADRoutes = new HashMap<>();
-    private HashMap<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
-    private String directory;
-
-    public Router(String directory) {
-        this.directory = directory;
-    }
+    private Map<String, Callback<Request, String>> GETRoutes = new HashMap<>();
+    private Map<String, Callback<Request, String>> HEADRoutes = new HashMap<>();
+    private Map<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
 
     public void get(String route, Callback<Request, String> controller) {
         GETRoutes.put(route, controller);
@@ -40,7 +35,7 @@ public class Router {
     private Callback<Request, String> findController(Request request) {
         String requestPath = request.getPath();
         String requestMethod = request.getMethod();
-        HashMap<String, Callback<Request, String>> routes = getMethodRoutes(requestMethod);
+        Map<String, Callback<Request, String>> routes = getMethodRoutes(requestMethod);
 
         assert routes != null;
         Optional<Callback<Request, String>> controller = routes.entrySet()
@@ -55,13 +50,13 @@ public class Router {
         }
     }
 
-    private HashMap<String, Callback<Request, String>> getMethodRoutes(String method) {
+    private Map<String, Callback<Request, String>> getMethodRoutes(String method) {
         switch(method) {
-            case HTTP.GET:
+            case HTTP_HEADERS.GET:
                 return this.GETRoutes;
-            case HTTP.HEAD:
+            case HTTP_HEADERS.HEAD:
                 return this.HEADRoutes;
-            case HTTP.POST:
+            case HTTP_HEADERS.POST:
                 return this.POSTRoutes;
         }
         return null;

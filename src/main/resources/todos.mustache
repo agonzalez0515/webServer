@@ -7,32 +7,39 @@
     </head>
     <body>
       <main class="todos-container">
-          <h1 class="title">My ToDos</h1>
-          <section class="todo-list-container">
-            <ul class="todo-list">
-                {{#todos}}
-                <li class="todo-list-item"><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
-                {{/todos}}
-            </ul>
-          </section>
-          <section>
-            <h2 class="todo-form-label">Add a new todo</h2>
-            <p class="todo-form-instructions"> To add a new todo, submit a title and details in the form below.</p>
-            <form action="/todo" method="post" id="todo-form"> 
-                <p>
-                    <label for="new-todo">Title:</label>
-                    <input type="text" id="new-todo" name="title">
-                </p>
-                <p>
-                    <label for="text">Details:</label>
-                    <textarea type="textarea" id="text" name="text" rows="5" cols="33"></textarea>
-                </p>
-                <br>
-                <button type="submit" class="save-button">Save</button>
-            </form>
-          </section>
-      </main>
-       <footer>
+            <h1 class="title">My ToDos</h1>
+            <section>
+                <form action="/todo" method="get" id="filter-form">
+                    <label for="filter">Search Todos:</label>
+                    <input type="text" id="filter" name="filter">
+                    <button id="search" type="submit">Search</button>
+                </form>
+            </section>
+            <section class="todo-list-container">
+                <ul class="todo-list">
+                    {{#todos}}
+                    <li class="todo-list-item"><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
+                    {{/todos}}
+                </ul>
+            </section>
+            <section>
+                <h2 class="todo-form-label">Add a new todo</h2>
+                <p class="todo-form-instructions"> To add a new todo, submit a title and details in the form below.</p>
+                <form action="/todo" method="post" id="todo-form"> 
+                    <p>
+                        <label for="new-todo">Title:</label>
+                        <input type="text" id="new-todo" name="title">
+                    </p>
+                    <p>
+                        <label for="text">Details:</label>
+                        <textarea type="textarea" id="text" name="text" rows="5" cols="33"></textarea>
+                    </p>
+                    <br>
+                    <button type="submit" class="save-button">Save</button>
+                </form>
+            </section>
+        </main>
+        <footer>
             &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
         </footer>
     </body>
@@ -40,25 +47,37 @@
         document
         .getElementById("todo-form")
         .addEventListener("submit", (event) => {
-        event.preventDefault();
-        var formData = "";
-        var formEl = event.target;
-        for (var i = 0; i < formEl.length; ++i) {
-            formData = formData + (formEl[i].name + "=" + formEl[i].value + "&");
-        }
+            event.preventDefault();
 
-        var url = '/todo';
-        var fetchOptions = {
-            method: 'POST',
-            body: formData
-        };
-        
-           var responsePromise = fetch(url, fetchOptions)
-      .then((res) => {
-        const host = window.location.host;
-        const location = res.headers.get("location");
-        window.location.replace("http://" + host + location);
-      })
-    });
+            const headers = new Headers();
+            headers.set("Content-Type", "application/x-www-form-urlencoded")
+
+            let formData = "";
+            const formEl = event.target;
+            for (let i = 0; i < formEl.length; ++i) {
+                let name = encodeWhiteSpaces(formEl[i].name);
+                let value = encodeWhiteSpaces(formEl[i].value);
+                formData = formData + (name + "=" + value) + "&";
+            }
+
+
+            const url = '/todo';
+            const fetchOptions = {
+                method: 'POST',
+                headers,
+                body: formData
+            };
+
+            fetch(url, fetchOptions)
+            .then((res) => {
+                const host = window.location.host;
+                const location = res.headers.get("location");
+                window.location.replace("http://" + host + location);
+                })
+            });
+
+            function encodeWhiteSpaces(data) {
+                return data.replace(/ /g, "%20");
+            }
     </script>
 </html>

@@ -14,7 +14,6 @@ public class SetupTest {
     Setup setup;
 
     @Mock
-    
     SystemUtils mockUtils;
 
     @Test
@@ -23,7 +22,7 @@ public class SetupTest {
         when(mockUtils.getPortEnv()).thenReturn(null);
         Setup setup = new Setup(mockUtils);
         
-        assertEquals(5000, setup.createPortNumber(noCliArgumentPassed));
+        assertEquals(5000, setup.portNumber(noCliArgumentPassed));
     }
 
     @Test
@@ -32,7 +31,7 @@ public class SetupTest {
         when(mockUtils.getPortEnv()).thenReturn(null);
         Setup setup = new Setup(mockUtils);
 
-        assertEquals(8080, setup.createPortNumber(cliArgumentPassed));
+        assertEquals(8080, setup.portNumber(cliArgumentPassed));
     }
 
     @Test
@@ -41,7 +40,7 @@ public class SetupTest {
         when(mockUtils.getPortEnv()).thenReturn("8000");
         Setup setupWithEnv = new Setup(mockUtils);
 
-        assertEquals(8000, setupWithEnv.createPortNumber(noCliArgumentPassed));
+        assertEquals(8000, setupWithEnv.portNumber(noCliArgumentPassed));
     }
 
     @Test
@@ -50,6 +49,6 @@ public class SetupTest {
         when(mockUtils.getPortEnv()).thenReturn("8000");
         Setup setupWithEnv = new Setup(mockUtils);
 
-        assertEquals(8000, setupWithEnv.createPortNumber(cliArgumentPassed));
+        assertEquals(8000, setupWithEnv.portNumber(cliArgumentPassed));
     }
 }

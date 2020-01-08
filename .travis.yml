@@ -8,7 +8,7 @@ deploy:
 install: ./install.sh
 
 before_script: 
-  - ./gradlew run &
+  - ./gradlew run -Ddirectory=src/integration-test/http_server_spec/data &
   - sleep 3 
 
 script: ./spinach.sh

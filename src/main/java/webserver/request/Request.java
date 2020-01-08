@@ -1,17 +1,19 @@
 package webserver.request;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class Request {
-    private  HashMap<String, String> headers;
+    private Map<String, String> headers;
+    private Map<String, String> query;
     private String method;
     private String path;
     private String body;
-
+    
     public static class Builder {
+        private Map<String, String> headers;
+        private Map<String, String> query;
         private String method;
         private String path;
-        private HashMap<String, String> headers;
         private String body;
 
         public Builder(String method, String path) {
@@ -19,13 +21,18 @@ public class Request {
             this.path = path;
         }
 
-        public Builder withHeaders(HashMap<String, String> headers) {
+        public Builder withHeaders(Map<String, String> headers) {
             this.headers = headers;
             return this;
         }
 
         public Builder withBody(String body) {
             this.body = body;
+            return this;
+        }
+
+        public Builder withQuery(Map<String, String> query) {
+            this.query = query;
             return this;
         }
 
@@ -39,6 +46,7 @@ public class Request {
         this.path = builder.path;
         this.body = builder.body;
         this.headers = builder.headers;
+        this.query = builder.query;
     }
 
     public String getMethod() {
@@ -53,7 +61,11 @@ public class Request {
         return this.body;
     }
 
-    public HashMap<String, String> getHeaders() {
+    public Map<String, String> getQuery() {
+        return this.query;
+    }
+
+    public Map<String, String> getHeaders() {
         return this.headers;
     }
 

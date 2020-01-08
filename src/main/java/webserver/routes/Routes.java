@@ -7,9 +7,9 @@ public class Routes {
     private AppRoutes appRoutes;
     private Router router;
 
-    public Routes(Router router) {
+    public Routes(Router router, String directory) {
         this.router = router;
-        this.todoRoutes = new TodoRoutes();
+        this.todoRoutes = new TodoRoutes(directory);
         this.appRoutes = new AppRoutes();
     }
 
