@@ -20,15 +20,18 @@ import webserver.Response;
 import webserver.ResponseBody;
 
 import webserver.models.Todo;
+import webserver.models.Todos;
 
 @SuppressWarnings("unchecked")
 public class TodoController {
     private static final int ID_PARAM = 2;
     private static final String PATH_SEPARATOR = "/";
     private JsonTodos jsonTodos;
+    private Todos todos;
 
     public TodoController(JsonTodos jsonTodos) {
         this.jsonTodos = jsonTodos;
+        this.todos = new Todos(jsonTodos);
     }
 
     public Callback<Request, String> getTodoNotFound = (request) -> {
@@ -39,15 +42,14 @@ public class TodoController {
         return headResponseBuilder(200);
     };
 
+    public Callback<Request, String> headTodoDetail = (request) -> {
+        return headResponseBuilder(200);
+    };
+
     public Callback<Request, String> getTodoList = (request) -> {
-        List<Todo> allTodos = new ArrayList<>();
+        List<Todo> allTodos = todos.getAllTodos();
         Map<String, Object> context = new HashMap<>();
         Mustache todosTemplate = MustacheUtil.getTemplate("todos.mustache");
-        JSONArray todosData = jsonTodos.getAllTodos();
-
-        for (JSONObject todoObj : (Iterable<JSONObject>) todosData) {
-            allTodos.add(Todo.fromJson(todoObj));
-        }
 
         context.put("todos", allTodos);
         return getResponseBuilder(200, MustacheUtil.executeTemplate(todosTemplate, context));
@@ -55,50 +57,65 @@ public class TodoController {
     };
 
     public Callback<Request, String> getTodoDetail = (request) -> {
+        final int id = getTodoIdFromPath(request.getPath());
         String html = "";
         int responseCode = 0;
-        String path = request.getPath();
-        String requestMethod = request.getMethod();
-
-        if (requestMethod.equals(HTTP.HEAD)) { return headResponseBuilder(200);}
-
-        int id = getTodoIdFromPath(path);
 
         Mustache template = MustacheUtil.getTemplate("todo-item.mustache");
         JSONObject todoItem = jsonTodos.getTodoById(id);
+        
         if (todoItem == null) {
             html = getTodoNotFound.apply(request);
-            responseCode = 404;
-
+            responseCode = HTTP.STATUS_400;
         } else {
             Todo todo = Todo.fromJson(todoItem);
             html = MustacheUtil.executeTemplate(template, todo);
-            responseCode = 200;
+            responseCode = HTTP.STATUS_200;
         }
 
         return getResponseBuilder(responseCode, html);
     };
 
-    public Callback<Request, String> newTodo = (request) -> {
-        String contentType = request.getHeaders().get(HTTP.CONTENT_TYPE);
-        if(contentType.equals("text/xml; charset=utf-8")) {
-            return postResponseBuilder(415, "/todo");
+    public Callback<Request, String> getFilteredList = (request) -> {
+        String query = request.getQuery().get("filter");
+        List<Todo> filteredTodos = new ArrayList<>();
+        Map<String, Object> context = new HashMap<>();
+        Mustache todosTemplate = MustacheUtil.getTemplate("todos-filtered.mustache");
+        JSONArray todosData = jsonTodos.getAllTodos();
+
+        for (JSONObject todoObj : (Iterable<JSONObject>) todosData) {
+            Todo todo = Todo.fromJson(todoObj);
+            if ((todo.getTitle().contains(query)) || todo.getText().contains(query)) {
+                filteredTodos.add(todo);
+            }
         }
 
-        HashMap<String, String> parsedBody = Parser.parseRequestBody(request.getBody());
-        int id = jsonTodos.getAllTodos().size() + 1;
-        
-        JSONObject newTodo = Todo.toJson(
-                                    parsedBody.get("title"), 
-                                    parsedBody.get("text"), 
-                                    id, 
-                                    false);
- 
-        jsonTodos.addTodo(newTodo); //need to handle if add is not successful
-
-        return postResponseBuilder(201, "/todo/"+ id);
+        context.put("todos", filteredTodos);
+        return getResponseBuilder(200, MustacheUtil.executeTemplate(todosTemplate, context));
     };
 
+    public Callback<Request, String> newTodo = (request) -> {
+        String contentType = request.getHeaders().get(HTTP.CONTENT_TYPE);
+        String body = request.getBody();
+        if (contentType.equals("application/x-www-form-urlencoded")) {
+            if (body.contains(" ")) { return postResponseBuilder(400, "/todo");}
+
+            HashMap<String, String> parsedBody = Parser.parseTodoFormBody(body);
+            int id = jsonTodos.getAllTodos().size() + 1;
+            
+            JSONObject newTodo = Todo.toJson(
+                                        parsedBody.get("title"), 
+                                        parsedBody.get("text"), 
+                                        id, 
+                                        false);
+        
+            jsonTodos.addTodo(newTodo); //need to handle if add is not successful
+    
+            return postResponseBuilder(201, "/todo/"+ id);
+        } else {
+            return postResponseBuilder(415, "/todo");
+        }
+    };
 
     public Callback<Request, String> updateTodoDetail = (request) -> {
         String path = request.getPath();

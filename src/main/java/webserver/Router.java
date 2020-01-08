@@ -14,11 +14,6 @@ public class Router {
     private HashMap<String, Callback<Request, String>> GETRoutes = new HashMap<>();
     private HashMap<String, Callback<Request, String>> HEADRoutes = new HashMap<>();
     private HashMap<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
-    private String directory;
-
-    public Router(String directory) {
-        this.directory = directory;
-    }
 
     public void get(String route, Callback<Request, String> controller) {
         GETRoutes.put(route, controller);

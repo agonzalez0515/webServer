@@ -10,4 +10,10 @@ public class HTTP {
   public static final String GET = "GET";
   public static final String HEAD = "HEAD";
   public static final String POST = "POST";
+
+  //status codes
+  public static final int STATUS_200 = 200;
+  public static final int STATUS_201 = 201;
+  public static final int STATUS_400 = 400;
+  public static final int STATUS_404 = 404;
 }
