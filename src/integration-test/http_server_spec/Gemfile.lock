@@ -15,7 +15,7 @@ GEM
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     parslet (1.8.2)
-    rack (2.0.5)
+    rack (2.0.8)
     rack-protection (2.0.4)
       rack
     rspec (3.8.0)
