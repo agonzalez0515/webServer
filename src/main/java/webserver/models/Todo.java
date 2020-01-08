@@ -57,12 +57,12 @@ public class Todo {
     }
 
     @SuppressWarnings("unchecked")
-    public static JSONObject toJson(String title, String text, int id, boolean isDone) {
+    public static JSONObject toJson(Todo todo) {
         JSONObject todoObj = new JSONObject();
-        todoObj.put("id", id);
-        todoObj.put("title", title);
-        todoObj.put("text", text);
-        todoObj.put("done", isDone);
+        todoObj.put("id", todo.getId());
+        todoObj.put("title", todo.getTitle());
+        todoObj.put("text", todo.getText());
+        todoObj.put("done", todo.getDone());
 
         return todoObj;
     }

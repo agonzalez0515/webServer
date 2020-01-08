@@ -1,4 +1,4 @@
-package webserver;
+package webserver.data;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,19 +9,21 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import webserver.FileUtils;
+
 @SuppressWarnings("unchecked")
-public class JsonTodos implements Todos {
+public class JsonClient  {
     private static JSONParser parser = new JSONParser();
     private FileUtils fileUtils  = new FileUtils();
     private JSONArray todosArray = null;
-    private String todosFile;
+    private String todoFilePath;
 
-    public JsonTodos(String fileName) {
-        this.todosFile = fileName;
+    public JsonClient(String directory) {
+        this.todoFilePath = "/" + directory + "/todos.json";
     }
 
-    public JSONArray getAllTodos() {
-        try (Reader reader = fileUtils.fileReader(todosFile)) {
+    public JSONArray getAllItems() {
+        try (Reader reader = fileUtils.fileReader(todoFilePath)) {
             todosArray = (JSONArray) parser.parse(reader);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -29,8 +31,8 @@ public class JsonTodos implements Todos {
         return todosArray;
     }
     
-    public JSONObject getTodoById(int id) {
-        try (Reader reader = fileUtils.fileReader(todosFile)) {
+    public JSONObject getItemById(int id) {
+        try (Reader reader = fileUtils.fileReader(todoFilePath)) {
             todosArray = (JSONArray) parser.parse(reader);
             for (JSONObject todoObj: (Iterable<JSONObject>) todosArray) {
                 int idToMatch = Integer.parseInt(todoObj.get("id").toString());
@@ -44,11 +46,11 @@ public class JsonTodos implements Todos {
         return null;
     }
 
-    public void addTodo(JSONObject newTodo) {
-        JSONArray todos = getAllTodos();
-        todos.add(newTodo);
+    public void addItem(JSONObject newItem) {
+        JSONArray todos = getAllItems();
+        todos.add(newItem);
 
-        try (FileWriter file = fileUtils.fileWriter(todosFile)) {
+        try (FileWriter file = fileUtils.fileWriter(todoFilePath)) {
             file.write(todos.toJSONString()); 
             file.flush();
         } catch (IOException e) {
@@ -56,16 +58,17 @@ public class JsonTodos implements Todos {
         }
     }
 
-    public void updateTodo(int id, boolean isDone) {
-        JSONArray todos = getAllTodos();
-        try (FileWriter file = fileUtils.fileWriter(todosFile)) {
-            for (JSONObject todo: (Iterable<JSONObject>) todos) {
-                int idToMatch = Integer.parseInt(todo.get("id").toString());
+    public void updateItemById(int id, JSONObject updatedItem) {
+        JSONArray todos = getAllItems();
+        try (FileWriter file = fileUtils.fileWriter(todoFilePath)) {
+            for (int i = 0; i < todos.size(); i++) {
+                JSONObject obj = (JSONObject) todos.get(i);
+                int idToMatch = Integer.parseInt(obj.get("id").toString());
                 if (id == idToMatch) {
-                    todo.put("done", isDone);
+                    todos.remove(i);
+                    todos.add(updatedItem);
                 }
             }
-            
             file.write(todos.toJSONString()); 
             file.flush();
         } catch (IOException e) {

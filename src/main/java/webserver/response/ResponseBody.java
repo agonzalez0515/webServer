@@ -1,4 +1,4 @@
-package webserver;
+package webserver.response;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,12 +36,12 @@ public class ResponseBody {
   }
 
   private static String createHTMLString(FileInputStream file) throws IOException {
-      StringBuilder buf = new StringBuilder();
+      StringBuilder html = new StringBuilder();
 
       int c;
       while ((c = file.read()) != -1) {
-          buf.append((char) c);
+          html.append((char) c);
       }
-      return buf.toString();
+      return html.toString();
   }
 }

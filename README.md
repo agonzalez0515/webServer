@@ -21,4 +21,6 @@ https://secret-wave-52844.herokuapp.com/
 ### Tests
 
 * Run unit tests `gradle test`
-* Run integration tests from root `cd gisrc/integration-test/http_server_spec/ && bundle exec spinach`
+* To run integration tests
+  - Start server locally `gradle run -Ddirectory=/src/integration-test/http_server_spec/data`. This will pull data from test file. 
+  - On a new terminal window, from root `cd src/integration-test/http_server_spec/ && bundle exec spinach`

@@ -1,34 +1,29 @@
 package webserver.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.github.mustachejava.Mustache;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import webserver.Callback;
 import webserver.MustacheUtil;
-import webserver.JsonTodos;
-import webserver.request.HTTP;
+import webserver.data.TodoService;
+import webserver.data.TodosHelper;
+import webserver.request.HTTP_HEADERS;
 import webserver.request.Parser;
 import webserver.request.Request;
-import webserver.Response;
-import webserver.ResponseBody;
-
+import webserver.response.Response;
+import webserver.response.ResponseBody;
 import webserver.models.Todo;
 
-@SuppressWarnings("unchecked")
 public class TodoController {
     private static final int ID_PARAM = 2;
     private static final String PATH_SEPARATOR = "/";
-    private JsonTodos jsonTodos;
+    private TodoService todoService;
 
-    public TodoController(JsonTodos jsonTodos) {
-        this.jsonTodos = jsonTodos;
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
     }
 
     public Callback<Request, String> getTodoNotFound = (request) -> {
@@ -36,105 +31,129 @@ public class TodoController {
     };
 
     public Callback<Request, String> headTodoList= (request) -> {
-        return headResponseBuilder(200);
+        return new Response.Builder(HTTP_HEADERS.STATUS_200)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+            .build();
+    };
+
+    public Callback<Request, String> headTodoDetail = (request) -> {
+        return new Response.Builder(HTTP_HEADERS.STATUS_200)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+            .build();
     };
 
     public Callback<Request, String> getTodoList = (request) -> {
-        List<Todo> allTodos = new ArrayList<>();
+        List<Todo> allTodos = todoService.getTodos();
         Map<String, Object> context = new HashMap<>();
         Mustache todosTemplate = MustacheUtil.getTemplate("todos.mustache");
-        JSONArray todosData = jsonTodos.getAllTodos();
-
-        for (JSONObject todoObj : (Iterable<JSONObject>) todosData) {
-            allTodos.add(Todo.fromJson(todoObj));
-        }
 
         context.put("todos", allTodos);
-        return getResponseBuilder(200, MustacheUtil.executeTemplate(todosTemplate, context));
+        String html = MustacheUtil.executeTemplate(todosTemplate, context);
 
+        return new Response.Builder(HTTP_HEADERS.STATUS_200)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, getContentLength(html))
+            .withBody(html)
+            .build();
     };
 
     public Callback<Request, String> getTodoDetail = (request) -> {
+        final int id = getTodoIdFromPath(request.getPath());
         String html = "";
         int responseCode = 0;
-        String path = request.getPath();
-        String requestMethod = request.getMethod();
-
-        if (requestMethod.equals(HTTP.HEAD)) { return headResponseBuilder(200);}
-
-        int id = getTodoIdFromPath(path);
 
         Mustache template = MustacheUtil.getTemplate("todo-item.mustache");
-        JSONObject todoItem = jsonTodos.getTodoById(id);
-        if (todoItem == null) {
-            html = getTodoNotFound.apply(request);
-            responseCode = 404;
+        List<Todo> allTodos = todoService.getTodos();
+        Todo todo = TodosHelper.getTodo(id, allTodos);
 
+        if (todo == null) {
+            html = getTodoNotFound.apply(request);
+            responseCode = HTTP_HEADERS.STATUS_400;
         } else {
-            Todo todo = Todo.fromJson(todoItem);
             html = MustacheUtil.executeTemplate(template, todo);
-            responseCode = 200;
+            responseCode = HTTP_HEADERS.STATUS_200;
         }
 
-        return getResponseBuilder(responseCode, html);
+        return new Response.Builder(responseCode)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, getContentLength(html))
+            .withBody(html)
+            .build();
+    };
+
+    public Callback<Request, String> getFilteredList = (request) -> {
+        String query = request.getQuery().get("filter");
+        List<Todo> filteredTodos = TodosHelper.getFilteredTodos(query, todoService.getTodos());
+        Map<String, Object> context = new HashMap<>();
+        Mustache template = MustacheUtil.getTemplate("todos-filtered.mustache");
+        context.put("todos", filteredTodos);
+        String html = MustacheUtil.executeTemplate(template, context);
+
+        return new Response.Builder(HTTP_HEADERS.STATUS_200)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, getContentLength(html))
+            .withBody(html)
+            .build();
     };
 
     public Callback<Request, String> newTodo = (request) -> {
-        String contentType = request.getHeaders().get(HTTP.CONTENT_TYPE);
-        if(contentType.equals("text/xml; charset=utf-8")) {
-            return postResponseBuilder(415, "/todo");
+        String contentType = request.getHeaders().get(HTTP_HEADERS.CONTENT_TYPE);
+        String body = request.getBody();
+        int statusCode;
+        String redirectPath;
+
+        if (contentType.equals("application/x-www-form-urlencoded")) {
+            
+            if (body.contains(" ")) { 
+                return new Response.Builder(HTTP_HEADERS.STATUS_400)
+                .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+                .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+                .withHeader(HTTP_HEADERS.LOCATION, "/todo")
+                .build();                    
+            }
+
+            Map<String, String> parsedBody = Parser.parseTodoFormBody(body);
+            int id = todoService.getTodos().size() + 1;
+            todoService.addTodo(parsedBody, id); //TODO handle if add is not successful
+    
+            statusCode = HTTP_HEADERS.STATUS_201;
+            redirectPath = "/todo/" + id;
+        } else {
+            statusCode = HTTP_HEADERS.STATUS_415;
+            redirectPath = "/todo/";
         }
 
-        HashMap<String, String> parsedBody = Parser.parseRequestBody(request.getBody());
-        int id = jsonTodos.getAllTodos().size() + 1;
-        
-        JSONObject newTodo = Todo.toJson(
-                                    parsedBody.get("title"), 
-                                    parsedBody.get("text"), 
-                                    id, 
-                                    false);
- 
-        jsonTodos.addTodo(newTodo); //need to handle if add is not successful
-
-        return postResponseBuilder(201, "/todo/"+ id);
+        return new Response.Builder(statusCode)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+            .withHeader(HTTP_HEADERS.LOCATION, redirectPath)
+            .build();
     };
 
+    public Callback<Request, String> updateTodoDone = (request) -> {
+        int id = getTodoIdFromPath(request.getPath());
+        List<Todo> allTodos = todoService.getTodos();
+        Todo todo = TodosHelper.getTodo(id, allTodos);
+        boolean isDone = todo.getDone();
+        todo.setDone(!isDone);
+        todoService.updateTodo(todo); //TODO handle if update is not successful
 
-    public Callback<Request, String> updateTodoDetail = (request) -> {
-        String path = request.getPath();
-        int id = getTodoIdFromPath(path);
-        JSONObject todoItem = jsonTodos.getTodoById(id);
-        boolean isDone = Boolean.parseBoolean(todoItem.get("done").toString());
-        jsonTodos.updateTodo(id, !isDone);
-
-        return postResponseBuilder(303, "/todo/" + id);
+        return new Response.Builder(HTTP_HEADERS.STATUS_303)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+            .withHeader(HTTP_HEADERS.LOCATION, "/todo/" + id)
+            .build();
     };
+
+    private String getContentLength(String body) {
+        return Integer.toString(body.length());
+    }
  
     private int getTodoIdFromPath(String path) {
         String[] pathSections = path.split(PATH_SEPARATOR);
         int id = Integer.parseInt(pathSections[ID_PARAM]);
         return id;
-    }
-
-    private String getResponseBuilder(int statusCode, String body) {
-        return new Response.Builder(statusCode)
-            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
-            .withHeader(HTTP.CONTENT_LENGTH, Integer.toString(body.length()))
-            .withBody(body)
-            .build();
-    }
-
-    private String postResponseBuilder(int statusCode, String redirectPath) {
-        return new Response.Builder(statusCode)
-            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
-            .withHeader(HTTP.CONTENT_LENGTH, "0")
-            .withHeader(HTTP.LOCATION, redirectPath)
-            .build();
-    }
-
-    private String headResponseBuilder(int statusCode) {
-        return new Response.Builder(statusCode)
-            .withHeader(HTTP.CONTENT_TYPE, "text/html; charset=utf-8")
-            .build();
     }
 }

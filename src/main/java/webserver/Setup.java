@@ -5,19 +5,19 @@ public class Setup {
     private final int DEFAULT_PORT = 5000;
     private final String envPort;
 
-    public Setup(final SystemUtils system) {
+    public Setup(SystemUtils system) {
         this.envPort = system.getPortEnv();
     }
 
-    public int createPortNumber(final String cliArg) {
+    public int portNumber(String cliArg) {
         return environmentPortProvided() ? Integer.parseInt(envPort) : cliPort(cliArg);
     }
 
-    public String createDirectory(final String cliArg) {
+    public String directoryName(String cliArg) {
         return cliArg.equals("") ? DEFAULT_DIRECTORY : cliArg;
     }
 
-    private int cliPort(final String cliArg) {
+    private int cliPort(String cliArg) {
         return cliArg.equals("") ? DEFAULT_PORT : Integer.parseInt(cliArg);
     }
 

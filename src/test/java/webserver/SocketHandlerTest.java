@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import webserver.response.ResponseBody;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -32,7 +34,7 @@ public class SocketHandlerTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(clientSocket.getInputStream()).thenReturn(new ByteArrayInputStream(inputString.getBytes()));
         when(clientSocket.getOutputStream()).thenReturn(out);
-        SocketHandler socketHandler = new SocketHandler(clientSocket, "");
+        SocketHandler socketHandler = new SocketHandler(clientSocket, "public");
 
         socketHandler.run();
 
@@ -47,7 +49,7 @@ public class SocketHandlerTest {
       ByteArrayInputStream in = spy(new ByteArrayInputStream(inputString.getBytes()));
       when(spyClientSocket.getInputStream()).thenReturn(in);
       when(spyClientSocket.getOutputStream()).thenReturn(out);
-      SocketHandler socketHandler = new SocketHandler(spyClientSocket, "");
+      SocketHandler socketHandler = new SocketHandler(spyClientSocket, "public");
 
       socketHandler.run();
 
