@@ -98,10 +98,50 @@ public class TodoController {
             .build();
     };
 
+    public Callback<Request, String> getTodoDetailEdit = (request) -> {
+        final int id = getTodoIdFromPath(request.getPath());
+        String html = "";
+        int responseCode = 0;
+
+        Mustache template = MustacheUtil.getTemplate("todo-item-edit.mustache");
+        List<Todo> allTodos = todoService.getTodos();
+        Todo todo = TodosHelper.getTodo(id, allTodos);
+
+        if (todo == null) {
+            html = getTodoNotFound.apply(request);
+            responseCode = HTTP_HEADERS.STATUS_400;
+        } else {
+            html = MustacheUtil.executeTemplate(template, todo);
+            responseCode = HTTP_HEADERS.STATUS_200;
+        }
+
+        return new Response.Builder(responseCode)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, getContentLength(html))
+            .withBody(html)
+            .build();
+    };
+
+    public Callback<Request, String> editTodo = (request) -> {
+        int id = getTodoIdFromPath(request.getPath());
+        List<Todo> allTodos = todoService.getTodos();
+        Todo todo = TodosHelper.getTodo(id, allTodos);
+        Map<String, String> parsedBody = Parser.parseTodoFormBody(request.getBody());
+        todo.setTitle(parsedBody.get("title"));
+        todo.setText(parsedBody.get("text"));
+        todoService.updateTodo(todo); //TODO handle if update is not successful
+
+        return new Response.Builder(HTTP_HEADERS.STATUS_200)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
+            .withHeader(HTTP_HEADERS.LOCATION, "/todo/" + id)
+            .build();
+    };
+
     public Callback<Request, String> newTodo = (request) -> {
         String contentType = request.getHeaders().get(HTTP_HEADERS.CONTENT_TYPE);
         String body = request.getBody();
-        int statusCode;
+        int statusCode; 
         String redirectPath;
 
         if (contentType.equals("application/x-www-form-urlencoded")) {

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TODO</title>
+         <link rel="stylesheet" type="text/css" href="/src/main/resources/index.css">
+    </head>
+    <body>
+        <header>
+            <h1>Edit your todo</h1>
+        </header>
+        <main class="todo-listing-main">
+            <section class="listing-detail-edit">
+                <form action="/todo/{{id}}" id="edit-form"> 
+                    <p>
+                        <label for="new-todo">Edit Title:</label>
+                        <input type="text" id="new-todo" name="title" value="{{title}}">
+                    </p>
+                    <p>
+                        <label for="text">Edit Details:</label>
+                        <textarea type="textarea" id="text" name="text" rows="5" cols="33">{{text}}</textarea>
+                    </p>
+                    <br>
+                    <button type="submit" class="save-button">Save</button>
+                </form>
+            </section>
+            <section>
+                <a href="/todo" rel="collection">Back to Listings</a>
+            </section>
+        </main>
+        <footer>
+            &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
+        </footer>
+    </body>
+        <script>
+        document
+        .getElementById("edit-form")
+        .addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const headers = new Headers();
+            headers.set("Content-Type", "application/x-www-form-urlencoded")
+
+            let formData = "";
+            const formEl = event.target;
+            for (let i = 0; i < formEl.length; ++i) {
+                let name = encodeWhiteSpaces(formEl[i].name);
+                let value = encodeWhiteSpaces(formEl[i].value);
+                formData = formData + (name + "=" + value) + "&";
+            }
+
+            const id = parseInt(window.location.pathname.split("/")[2]);
+            const url = '/todo/'+ id;
+            const fetchOptions = {
+                method: 'PUT',
+                headers,
+                body: formData
+            };
+
+            fetch(url, fetchOptions)
+            .then((res) => {
+                const host = window.location.host;
+                const location = res.headers.get("location");
+                window.location.replace("http://" + host + location);
+                })
+            });
+
+            function encodeWhiteSpaces(data) {
+                return data.replace(/ /g, "%20");
+            }
+    </script>
+</html>
