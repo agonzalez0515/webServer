@@ -1,12 +1,14 @@
-package webserver.data;
+                              package webserver.data;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import webserver.helpers.TestHelper;
 import webserver.data.JsonClient;
 import webserver.models.Todo;
 
@@ -18,10 +20,18 @@ import static org.hamcrest.Matchers.greaterThan;
 @SuppressWarnings("unchecked")
 public class JsonClientTest {
 
-    //TODO setup a before to seed the json and an after to clear the json file. 
+    @Before
+    public void setUpData() {
+        TestHelper.copyFile("src/test/resources/test.json", "src/test/resources/todos.json");
+    }
+
+    @After
+    public void clearData() {
+        TestHelper.clearFile("src/test/resources/todos.json");
+    }
 
     @Test
-    public void testItReturnsAGroupOfTodoItems() {
+    public void itReturnsAGroupOfTodoItems() {
         JsonClient todos = new JsonClient("/src/test/resources");
         JSONArray items = todos.getAllItems();
         JSONObject actual = (JSONObject) items.get(0);
@@ -30,19 +40,19 @@ public class JsonClientTest {
     }
 
     @Test
-    public void testItUpdatesTodoListWithNewTodoItem() {
+    public void itUpdatesTodoListWithNewTodoItem() {
         JsonClient todos = new JsonClient("/src/test/resources");
         JSONObject newTodo = new JSONObject();
-        newTodo.put("id", 3);
+        newTodo.put("id", 100);
         newTodo.put("title", "Supergirl");
         todos.addItem(newTodo);
-        JSONObject actual = todos.getItemById(3);
+        JSONObject actual = todos.getItemById(100);
 
         assertTrue(actual.containsValue("Supergirl"));
     }
 
     @Test
-    public void testItUpdatesAnExistingTodoItem() {
+    public void itUpdatesAnExistingTodoItem() {
         JsonClient todos = new JsonClient("/src/test/resources");
         Todo updatedTodo = new Todo("podcasts", "listen to lots", 1, true);
         todos.updateItemById(1, Todo.toJson(updatedTodo));
@@ -52,10 +62,19 @@ public class JsonClientTest {
     }
 
     @Test
-    public void testItReturnsOneTodo() {
+    public void itReturnsOneTodo() {
         JsonClient todos = new JsonClient("/src/test/resources");
         JSONObject actual = todos.getItemById(1);
 
         assertNotNull(actual);
     } 
+
+    @Test
+    public void itDeletesATodo() {
+        JsonClient todos = new JsonClient("/src/test/resources");
+        todos.deleteItemById(1);
+        JSONObject actual = todos.getItemById(1);
+        
+        assertNull(actual);
+    }
 }
