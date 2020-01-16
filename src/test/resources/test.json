@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "text": "listen to lots",
+    "title": "podcasts",
+    "done": true
+  },
+  {
+    "id": 2,
+    "text": "drink coffee",
+    "title": "for lots of energy",
+    "done": false
+  },
+  {
+    "id": 3,
+    "text": "walk the dog",
+    "title": "take a break",
+    "done": true
+  }
+]

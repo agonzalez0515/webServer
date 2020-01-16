@@ -43,7 +43,7 @@ public class Response {
     }
 
     private static Map<Integer, String> buildResponseCodes() {
-        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found", 303, "See Other", 400, "Bad Request", 415, "Unsupported Media Type");
+        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found", 303, "See Other", 400, "Bad Request", 415, "Unsupported Media Type", 204, "No Content");
         return responses;
     }
 

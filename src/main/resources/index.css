@@ -80,3 +80,11 @@ a {
     height: 2rem;
     font-size: 1rem;
 }
+
+.complete {
+    color: green;
+}
+
+.incomplete {
+    color: red;
+}

@@ -75,4 +75,21 @@ public class JsonClient  {
             e.printStackTrace();
         }
     }
+
+    public void deleteItemById(int id) {
+        JSONArray todos = getAllItems();
+        try (FileWriter file = fileUtils.fileWriter(todoFilePath)) {
+            for (int i = 0; i < todos.size(); i++) {
+                JSONObject obj = (JSONObject) todos.get(i);
+                int idToMatch = Integer.parseInt(obj.get("id").toString());
+                if (id == idToMatch) {
+                    todos.remove(i);
+                }
+            }
+            file.write(todos.toJSONString()); 
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -11,10 +11,12 @@ public class HTTP_HEADERS {
   public static final String HEAD = "HEAD";
   public static final String POST = "POST";
   public static final String PUT = "PUT";
+  public static final String DELETE = "DELETE";
 
   //status codes
   public static final int STATUS_200 = 200;
   public static final int STATUS_201 = 201;
+  public static final int STATUS_204 = 204;
   public static final int STATUS_303 = 303;
   public static final int STATUS_400 = 400;
   public static final int STATUS_404 = 404;

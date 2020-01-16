@@ -42,4 +42,8 @@ public class TodoService implements Todos {
         JSONObject updatedTodo = Todo.toJson(todo);
         json.updateItemById(id, updatedTodo);
     }
+
+    public void deleteTodo(int id) {
+        json.deleteItemById(id);
+    }
 }

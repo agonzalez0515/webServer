@@ -3,6 +3,7 @@ package webserver.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.mustachejava.Mustache;
 
@@ -124,18 +125,38 @@ public class TodoController {
 
     public Callback<Request, String> editTodo = (request) -> {
         int id = getTodoIdFromPath(request.getPath());
+        String contentType = request.getHeaders().get(HTTP_HEADERS.CONTENT_TYPE);
+        String body = request.getBody();
         List<Todo> allTodos = todoService.getTodos();
         Todo todo = TodosHelper.getTodo(id, allTodos);
-        Map<String, String> parsedBody = Parser.parseTodoFormBody(request.getBody());
-        todo.setTitle(parsedBody.get("title"));
-        todo.setText(parsedBody.get("text"));
-        todoService.updateTodo(todo); //TODO handle if update is not successful
+ 
+        if (contentType.equals("application/x-www-form-urlencoded")) {
 
-        return new Response.Builder(HTTP_HEADERS.STATUS_200)
-            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
-            .withHeader(HTTP_HEADERS.CONTENT_LENGTH, "0")
-            .withHeader(HTTP_HEADERS.LOCATION, "/todo/" + id)
-            .build();
+            if (body.equals("") || body.contains(" ")) { 
+                return new Response.Builder(HTTP_HEADERS.STATUS_400)
+                .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+                .build();                    
+            }
+
+            Map<String, String> parsedBody = Parser.parseTodoFormBody(body);
+            todo.setTitle(parsedBody.get("title"));
+            todo.setText(parsedBody.get("text"));
+            todoService.updateTodo(todo); //TODO handle if update is not successful
+            Mustache template = MustacheUtil.getTemplate("todo-item.mustache");
+            String html = MustacheUtil.executeTemplate(template, todo);
+    
+            return new Response.Builder(HTTP_HEADERS.STATUS_200)
+                .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+                .withHeader(HTTP_HEADERS.CONTENT_LENGTH, getContentLength(html))
+                .withHeader(HTTP_HEADERS.LOCATION, "/todo/" + id)
+                .withBody(html)
+                .build();
+        } else {
+
+            return new Response.Builder(HTTP_HEADERS.STATUS_415)
+                .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+                .build();
+        }
     };
 
     public Callback<Request, String> newTodo = (request) -> {
@@ -187,13 +208,30 @@ public class TodoController {
             .build();
     };
 
+    public Callback<Request, String> deleteTodo = (request) -> {
+        Integer id = getTodoIdFromPath(request.getPath());
+        List<Integer> ids = todoService.getTodos().stream().map(todo -> todo.getId()).collect(Collectors.toList());
+
+        if (id != null && ids.contains(id) ) {
+            todoService.deleteTodo(id);
+        }
+        
+        return new Response.Builder(HTTP_HEADERS.STATUS_204)
+            .withHeader(HTTP_HEADERS.CONTENT_TYPE, "text/html; charset=utf-8")
+            .build();
+    };
+
     private String getContentLength(String body) {
         return Integer.toString(body.length());
     }
  
-    private int getTodoIdFromPath(String path) {
+    private Integer getTodoIdFromPath(String path) {
         String[] pathSections = path.split(PATH_SEPARATOR);
-        int id = Integer.parseInt(pathSections[ID_PARAM]);
-        return id;
+        try {
+            int id = Integer.parseInt(pathSections[ID_PARAM]);
+            return id;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

@@ -15,6 +15,7 @@ public class Router {
     private Map<String, Callback<Request, String>> HEADRoutes = new HashMap<>();
     private Map<String, Callback<Request, String>> POSTRoutes = new HashMap<>();
     private Map<String, Callback<Request, String>> PUTRoutes = new HashMap<>();
+    private Map<String, Callback<Request, String>> DELETERoutes = new HashMap<>();
 
     public void get(String route, Callback<Request, String> controller) {
         GETRoutes.put(route, controller);
@@ -30,6 +31,10 @@ public class Router {
 
     public void put(String route, Callback<Request, String> controller) {
         PUTRoutes.put(route, controller);
+    }
+
+    public void delete(String route, Callback<Request, String> controller) {
+        DELETERoutes.put(route, controller);
     }
     
     public String route(Request request) {
@@ -65,6 +70,8 @@ public class Router {
                 return this.POSTRoutes;
             case HTTP_HEADERS.PUT:
                 return this.PUTRoutes;
+            case HTTP_HEADERS.DELETE:
+                return this.DELETERoutes;
         }
         return null;
     }

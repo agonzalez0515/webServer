@@ -17,12 +17,15 @@
                     <button id="toggle" type="submit"> Done </button>
                 </form>
             </section>
-            {{^done}}
-            <p class="incomplete"> Not Done</p>
-            {{/done}}
-            {{#done}}
-            <p class="complete"> DONE </p>
-            {{/done}}
+            <div>
+                {{^done}}
+                <p class="incomplete"> Not Done </p>
+                {{/done}}
+                {{#done}}
+                <p class="complete"> DONE </p>
+                {{/done}}
+                <button id="delete">Delete</button>
+            </div>
             <section>
                 <a href="/todo/{{id}}/edit">Edit Listing</a>
                 <a href="/todo" rel="collection">Back to Listings</a>
@@ -32,14 +35,22 @@
             &copy 2019 @angieg0nzalez | 8th Light Apprenticeship
         </footer>
     </body>
+        <script>
+        document
+        .getElementById("delete")
+        .addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const url = '/todo/{{id}}';
+            const fetchOptions = {
+                method: 'DELETE',
+            };
+
+            fetch(url, fetchOptions)
+            .then((res) => {
+                const host = window.location.host;
+                window.location.replace("http://" + host + "/todo");
+                })
+            });
+    </script>
 </html>
-
-<style>
-.complete {
-    color: green;
-}
-
-.incomplete {
-    color: red;
-}
-</style>

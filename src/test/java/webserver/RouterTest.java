@@ -49,4 +49,16 @@ public class RouterTest {
         assertThat(res, containsString("File Not Found"));
     }
 
+    @Test
+    public void testItReturnsDeleteResponseBasedOffTheRoute() {
+        when(request.getPath()).thenReturn("/todo/55");
+        when(request.getMethod()).thenReturn("DELETE");
+        router.delete("/todo/[0-9]+", (Request req) -> {
+            return "hello";
+        });
+        String res = router.route(request);
+
+        assertEquals("hello", res);
+    }
+
 }

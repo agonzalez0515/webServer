@@ -24,5 +24,8 @@ public class TodoRoutes {
         router.post("/todo/[0-9]+/toggle", todoController.updateTodoDone);
 
         router.put("/todo/[0-9]+", todoController.editTodo);
+
+        router.delete("/todo/[0-9]+", todoController.deleteTodo);
+        router.delete("/todo/(.*)", todoController.deleteTodo);
     }
 }

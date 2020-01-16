@@ -48,26 +48,26 @@ public class TodoControllerTest {
     @Test
     public void itReturnsAllTodoItems() throws IOException {
         when(todoService.getTodos()).thenReturn(todos);
-        String htmlString = controller.getTodoList.apply(request);
+        String responseString = controller.getTodoList.apply(request);
 
-        assertThat(htmlString, containsString("hello"));
+        assertThat(responseString, containsString("hello"));
     }
 
     @Test
     public void itReturnsOneTodoItemWithDetails() throws IOException {
         when(request.getPath()).thenReturn("/hey/2");
         when(todoService.getTodos()).thenReturn(todos);
-        String htmlString = controller.getTodoDetail.apply(request);
+        String responseString = controller.getTodoDetail.apply(request);
 
-        assertThat(htmlString, containsString("spotify"));
+        assertThat(responseString, containsString("spotify"));
     }
 
     @Test
     public void itReturnsNotFoundPageWhenItemIdDoesNotExist() throws IOException {
         when(request.getPath()).thenReturn("/hey/15");
-        String htmlString = controller.getTodoDetail.apply(request);
+        String responseString = controller.getTodoDetail.apply(request);
         
-        assertThat(htmlString, containsString("File Not Found"));
+        assertThat(responseString, containsString("File Not Found"));
     } 
 
     @Test
@@ -75,9 +75,9 @@ public class TodoControllerTest {
         var query = Map.of("filter", "day");
         when(request.getQuery()).thenReturn(query);
         when(todoService.getTodos()).thenReturn(todos);
-        String htmlString = controller.getFilteredList.apply(request);
+        String responseString = controller.getFilteredList.apply(request);
         
-        assertThat(htmlString, containsString("listen to spotify"));
+        assertThat(responseString, containsString("listen to spotify"));
     }
 
     @Test
@@ -85,9 +85,9 @@ public class TodoControllerTest {
         var headers = Map.of("Content-Type", "application/x-www-form-urlencoded");
         when(request.getHeaders()).thenReturn(headers);
         when(request.getBody()).thenReturn("name=eat%20lunch");
-        String htmlString = controller.newTodo.apply(request);
+        String responseString = controller.newTodo.apply(request);
 
-        assertThat(htmlString, containsString("201 Created"));
+        assertThat(responseString, containsString("201 Created"));
     }
 
     @Test
@@ -95,9 +95,9 @@ public class TodoControllerTest {
         var headers = Map.of("Content-Type", "application/x-www-form-urlencoded");
         when(request.getHeaders()).thenReturn(headers);
         when(request.getBody()).thenReturn("name=eat lunch");
-        String htmlString = controller.newTodo.apply(request);
+        String responseString = controller.newTodo.apply(request);
 
-        assertThat(htmlString, containsString("400 Bad Request"));
+        assertThat(responseString, containsString("400 Bad Request"));
     }
 
     @Test
@@ -105,8 +105,24 @@ public class TodoControllerTest {
         var headers = Map.of("Content-Type", "application/xml");
         when(request.getHeaders()).thenReturn(headers);
         when(request.getBody()).thenReturn("name=eat%20lunch");
-        String htmlString = controller.newTodo.apply(request);
+        String responseString = controller.newTodo.apply(request);
 
-        assertThat(htmlString, containsString("415 Unsupported Media Type"));
+        assertThat(responseString, containsString("415 Unsupported Media Type"));
+    }
+
+    @Test
+    public void itReturnsNoContentResponseWgrahenDeletingTodo() throws IOException {
+        when(request.getPath()).thenReturn("/hey/2");
+
+        String responseString = controller.deleteTodo.apply(request);
+        assertThat(responseString, containsString("204 No Content"));
+    }
+
+    @Test
+    public void itReturnsNoContentResponseWhenItTriesToDeleteTodoDoesNotExist() throws IOException {
+        when(request.getPath()).thenReturn("/hey/nope");
+        
+        String responseString = controller.deleteTodo.apply(request);
+        assertThat(responseString, containsString("204 No Content"));
     }
 }
