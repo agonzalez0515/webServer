@@ -25,9 +25,9 @@ class SocketHandler implements Runnable {
     }
 
     public void run() {
-        Parser parser= new Parser();
-        Router router = new Router(directory);
-        Routes routes = new Routes(router);
+        Parser parser = new Parser();
+        Router router = new Router();
+        Routes routes = new Routes(router, directory);
         routes.setupRoutes();
 
         try {

@@ -1,4 +1,4 @@
-package webserver;
+package webserver.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,12 +9,12 @@ public class Response {
     private static final Map<Integer, String> responseStatus = buildResponseCodes();
     private final int statusCode;
     private final String body;
-    private final HashMap<String, String> headers;
+    private final Map<String, String> headers;
 
     public static class Builder {
         private final int statusCode;
         private String body = "";
-        private HashMap<String, String> headers = new HashMap<String, String>();
+        private Map<String, String> headers = new HashMap<String, String>();
 
         public Builder(int statusCode) {
             this.statusCode = statusCode;
@@ -43,24 +43,23 @@ public class Response {
     }
 
     private static Map<Integer, String> buildResponseCodes() {
-        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found", 303, "See Other");
+        var responses = Map.of(200, "OK", 201, "Created", 404, "Not Found", 303, "See Other", 400, "Bad Request", 415, "Unsupported Media Type");
         return responses;
     }
 
     private String createInitialResponseLine(int statusCode) {
-        String initialResponseLine = "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
-        return initialResponseLine;
+        return "HTTP/1.1 " + statusCode + " " + responseStatus.get(statusCode);
     }
 
     public String toResponseString() {
         String initialLine = createInitialResponseLine(statusCode);
         String allHeaders = convertHeaderMapToString(headers);
-        String responseString = initialLine + CRLF + allHeaders + CRLF + CRLF + body + CRLF + "\n";
+        String responseString = initialLine + CRLF + allHeaders + CRLF + CRLF + body;
       
         return responseString;
     }
 
-    private String convertHeaderMapToString(HashMap<String, String> headers) {
+    private String convertHeaderMapToString(Map<String, String> headers) {
         String mapAsString = headers.keySet()
                                     .stream()
                                     .map(key -> key + ": " + headers.get(key) + CRLF)

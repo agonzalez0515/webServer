@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>TODOS</title>
+      <link rel="stylesheet" type="text/css" href="/src/main/resources/index.css">
+    </head>
+    <body>
+        <main class="todos-container">
+            <h1 class="title">My ToDos</h1>
+            <section>
+                <form action="/todo" method="get" id="filter-form">
+                    <label for="filter">Search Todos:</label>
+                    <input type="text" id="filter" name="filter">
+                    <button id="search" type="submit">Search</button>
+                </form>
+            </section>
+            <section class="todo-list-container">
+                <ul class="todo-list">
+                    {{#todos}}
+                    <li class="todo-list-item"><a href="/todo/{{id}}" rel="item">{{title}}</a></li>
+                    {{/todos}}
+                </ul>
+                </section>
+            <div>
+                <a href="/todo" rel="collection">Back to listings</a>
+            </div>
+        </main>
+    </body>
+</html>
+

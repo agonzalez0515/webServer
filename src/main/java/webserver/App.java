@@ -11,8 +11,8 @@ public class App {
     private static Setup setup = new Setup(system);
 
     public static void main(String[] args) {
-        int portNum = setup.createPortNumber(system.getPortCliArg());
-        String directory = setup.createDirectory(system.getDirectoryCliArg());
+        int portNum = setup.portNumber(system.getPortCliArg());
+        String directory = setup.directoryName(system.getDirectoryCliArg());
 
         try {
             ServerSocket server = socketCreator.createServerSocket(portNum);
