@@ -14,7 +14,7 @@ public class Setup {
     }
         
     public String directoryName(String cliArg) {
-        return cliArg.equals("") ? DEFAULT_DIRECTORY : cliArg;
+        return cliArg == null || cliArg.equals("") ? DEFAULT_DIRECTORY : cliArg;
     }
 
     private int cliPort(String cliArg) {
